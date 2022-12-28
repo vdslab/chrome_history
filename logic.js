@@ -39,8 +39,19 @@ function constructHistory(historyItems) {
 
 const data = [];
 
+let d = [];
+d.push([]);
+d[data.length].push(0);
+d[data.length].push(1);
+console.log(d);
+console.log(d.length);
+
 chrome.history.onVisited.addListener(function (re) {
-  data.push(re);
+  data.push([]);
+  data[data.length - 1].push(re);
+  if (data.length >= 2) {
+    data[data.length - 2].push(re);
+  }
   console.log(data);
 });
 
