@@ -2,9 +2,9 @@
   "name": "chrome_history",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.jsx",
   "scripts": {
-    "start": "webpack --entry-reset ./src/logic.js"
+    "start": "webpack --entry-reset ./src/logic.jsx"
   },
   "repository": {
     "type": "git",
