@@ -1,0 +1,27 @@
+{
+  "name": "chrome_history",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --entry-reset ./src/logic.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vdslab/chrome_history.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vdslab/chrome_history/issues"
+  },
+  "homepage": "https://github.com/vdslab/chrome_history#readme",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
