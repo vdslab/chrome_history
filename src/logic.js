@@ -1,3 +1,7 @@
+//俺の勝ちです。なんで負けたか考えといてください
+
+
+
 const kMillisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
 const kOneWeekAgo = new Date().getTime() - kMillisecondsPerWeek;
 let historyDiv = document.getElementById("historyDiv");
