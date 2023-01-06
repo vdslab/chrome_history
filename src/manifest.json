@@ -7,9 +7,10 @@
     "history": "history.html"
   },
   "action": {
-    "default_title": "History"
+    "default_title": "History",
+    "default_popup": "history.html"
   },
-  "permissions": ["history", "chrome://favicon/"],
+  "permissions": ["history"],
   "icons": {
     "16": "history16.png",
     "32": "history32.png",
