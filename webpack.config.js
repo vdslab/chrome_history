@@ -1,31 +1,43 @@
 const path = require("path");
-
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  entry: path.resolve(__dirname, "./src/index.js"),
+  mode: "development",
+  entry: {
+    // background: path.join(__dirname, "src/background.ts"),
+    main: path.join(__dirname, "src/index.js"),
+  },
+  output: {
+    path: path.join(__dirname, "dist/js"),
+    filename: "[name].js",
+    clean: true,
+  },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
+        use: "babel-loader",
         exclude: /node_modules/,
-        use: ["babel-loader"],
       },
     ],
   },
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    publicPath: "/",
-    filename: "bundle.js",
-  },
-
   resolve: {
-    extensions: ["*", ".js", ".jsx"],
+    extensions: [".js", ".jsx"],
   },
-
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/index.html",
+    new CopyPlugin({
+      patterns: [
+        {
+          from: ".",
+          to: "../",
+          context: "public",
+        },
+      ],
     }),
   ],
+  devtool: "inline-source-map",
+  // cache: true,
+  watchOptions: {
+    poll: 1000,
+  },
 };
