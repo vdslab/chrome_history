@@ -10,5 +10,8 @@
     "32": "history32.png",
     "48": "history48.png",
     "128": "history128.png"
+  },
+  "background": {
+    "service_worker": "js/background.js"
   }
 }
