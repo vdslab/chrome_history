@@ -184,6 +184,7 @@ export default function HistoryChart({ nodes, links }) {
               console.log("EVT", evt);
               console.log("TARGET", node.data());
               console.log("TARGET TYPE", typeof node[0]);
+              console.log("TARGET URL", node.data().url);
             });
           }}
           // abc={console.log("myCyRef", myCyRef)}
