@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import cytoscape from "cytoscape";
 import CytoscapeComponent from "react-cytoscapejs";
 import cola from "cytoscape-cola";
@@ -6,7 +6,8 @@ import cola from "cytoscape-cola";
 cytoscape.use(cola);
 
 export default function HistoryChart({ nodes, links }) {
-  const cyRef = useRef(null);
+  // useRefだと再描画されないらしいのでuseStateを使うようにしてる
+  const [cy, setCy] = useState(null);
   console.log("history chart");
 
   const { graphData } = useMemo(() => {
