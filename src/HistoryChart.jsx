@@ -5,33 +5,37 @@ import cola from "cytoscape-cola";
 
 cytoscape.use(cola);
 
-export default function HistoryChart(props) {
+export default function HistoryChart({ nodes, links }) {
+  console.log("history chart");
+
   const graphData = useMemo(() => {
-    const { nodes, links } = props;
-    if (!nodes || !links) {
+    // const { nodes, links } = props;
+    if (nodes.length === 0 || links.length === 0) {
+      console.log("node or link is none");
       return null;
     }
 
-    const nodedata = nodes.map(({ name }, index) => {
+    // console.log("props");
+    // console.log("nodes", nodes);
+    // console.log("links", links);
+
+    const nodedata = nodes.map(({ data }) => {
+      console.log("nodes item", data);
+      console.log("nodes item id", data.id);
       return {
         data: {
-          id: index,
-          label: name,
+          id: data.id,
+          label: data.url,
           type: "node",
         },
       };
     });
-    const linkdata = links.map(({ target, source, value }) => {
-      return {
-        data: {
-          target,
-          source,
-          label: "link",
-        },
-      };
-    });
+    const linkdata = links;
+    // console.log("data format");
+    // console.log("nodes", nodedata);
+    // console.log("link", linkdata);
     return { nodes: nodedata, edges: linkdata };
-  }, [props]);
+  }, [nodes, links]);
 
   if (graphData === null) {
     return (
