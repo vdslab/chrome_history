@@ -31,6 +31,8 @@ export default function HistoryChart(props) {
 
   const width = "800px";
   const height = "600px";
+  const graphWidth = "80vw";
+  const graphHeight = "80vh";
 
   // const graphData = { nodes: nodes, edges: links };
 
@@ -38,7 +40,7 @@ export default function HistoryChart(props) {
     name: "cola",
     animate: true,
     // refresh: 1, // number of ticks per frame; higher is faster but more jerky
-    maxSimulationTime: 6000, // max length in ms to run the layout6    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
+    maxSimulationTime: 3000, // max length in ms to run the layout6    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
     fit: true, // on every layout reposition of nodes, fit the viewport
     padding: 30, // padding around the simulation
     // boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
@@ -52,7 +54,7 @@ export default function HistoryChart(props) {
     randomize: false, // use random node positions at beginning of layout
     avoidOverlap: true, // if true, prevents overlap of node bounding boxes
     handleDisconnected: true, // if true, avoids disconnected components from overlapping
-    convergenceThreshold: 0.01, // when the alpha value (system energy) falls below this value, the layout stops
+    convergenceThreshold: 0.05, // when the alpha value (system energy) falls below this value, the layout stops
     nodeSpacing: function (node) {
       return 10;
     }, // extra spacing around nodes
@@ -68,7 +70,7 @@ export default function HistoryChart(props) {
     edgeJaccardLength: undefined, // jaccard edge length in simulation
 
     // iterations of cola algorithm; uses default values on undefined
-    unconstrIter: 20, // unconstrained initial layout iterations
+    unconstrIter: 30, // unconstrained initial layout iterations
     userConstIter: 20, // initial layout iterations with user-specified constraints
     allConstIter: 20, // initial layout iterations with all constraints including non-overlap
   };
@@ -132,40 +134,32 @@ export default function HistoryChart(props) {
     <div>
       <p>以下に描画</p>
 
-      <CytoscapeComponent
-        elements={CytoscapeComponent.normalizeElements(graphData)}
-        // pan={{ x: 200, y: 200 }}
-        style={{ width: width, height: height }}
-        zoomingEnabled={true}
-        maxZoom={3}
-        minZoom={0.1}
-        autounselectify={false}
-        boxSelectionEnabled={true}
-        layout={layout}
-        stylesheet={styleSheet}
-        cy={(cy) => {
-          // myCyRef.current = cy;
-          console.log("EVT", cy);
+      <div style={{ width: width, height: height }}>
+        <CytoscapeComponent
+          elements={CytoscapeComponent.normalizeElements(graphData)}
+          // pan={{ x: 200, y: 200 }}
+          style={{ width: graphWidth, height: graphHeight }}
+          zoomingEnabled={true}
+          maxZoom={1.5}
+          minZoom={0.3}
+          autounselectify={false}
+          boxSelectionEnabled={true}
+          layout={layout}
+          stylesheet={styleSheet}
+          cy={(cy) => {
+            // myCyRef.current = cy;
+            console.log("EVT", cy);
 
-          cy.on("tap", "node", (evt) => {
-            var node = evt.target;
-            console.log("EVT", evt);
-            console.log("TARGET", node.data());
-            console.log("TARGET TYPE", typeof node[0]);
-          });
-        }}
-        // abc={console.log("myCyRef", myCyRef)}
-      />
-      {/* <div className="nodes">
-        {nodes.map((item, index) => {
-          return <p key={index}>{JSON.stringify(item)}</p>;
-        })}
+            cy.on("tap", "node", (evt) => {
+              var node = evt.target;
+              console.log("EVT", evt);
+              console.log("TARGET", node.data());
+              console.log("TARGET TYPE", typeof node[0]);
+            });
+          }}
+          // abc={console.log("myCyRef", myCyRef)}
+        />
       </div>
-      <div className="links">
-        {links.map((item, index) => {
-          return <p key={index}>{JSON.stringify(item)}</p>;
-        })}
-      </div> */}
     </div>
   );
 }
