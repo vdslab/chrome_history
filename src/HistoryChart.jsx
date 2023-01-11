@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import cytoscape from "cytoscape";
 import CytoscapeComponent from "react-cytoscapejs";
 import cola from "cytoscape-cola";
@@ -6,6 +6,7 @@ import cola from "cytoscape-cola";
 cytoscape.use(cola);
 
 export default function HistoryChart({ nodes, links }) {
+  const cyRef = useRef(null);
   console.log("history chart");
 
   const graphData = useMemo(() => {
@@ -176,7 +177,7 @@ export default function HistoryChart({ nodes, links }) {
           layout={layout}
           stylesheet={styleSheet}
           cy={(cy) => {
-            // myCyRef.current = cy;
+            cyRef.current = cy;
             console.log("EVT", cy);
 
             cy.on("tap", "node", (evt) => {
