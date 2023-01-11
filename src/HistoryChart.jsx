@@ -6,8 +6,7 @@ import cola from "cytoscape-cola";
 cytoscape.use(cola);
 
 export default function HistoryChart({ nodes, links }) {
-  // useRefだと再描画されないらしいのでuseStateを使うようにしてる
-  const [cy, setCy] = useState(null);
+  const cyRef = useRef(null);
   console.log("history chart");
 
   const { graphData } = useMemo(() => {
@@ -180,7 +179,7 @@ export default function HistoryChart({ nodes, links }) {
           layout={layout}
           stylesheet={styleSheet}
           cy={(cy) => {
-            setCy(cy);
+            cyRef.current = cy;
             console.log("EVT", cy);
 
             cy.on("tap", "node", (evt) => {
