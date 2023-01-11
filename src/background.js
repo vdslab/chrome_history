@@ -12,5 +12,16 @@ chrome.history.onVisited.addListener((re) => {
     links.push({
       data: { target: re.id, source: nodeIDs[nodeIDs.length - 2] },
     });
+    chrome.runtime.sendMessage("ready-post-data", (response) => {
+      console.log("received ", response);
+    });
+  }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message === "get-data") {
+    sendResponse({ nodes, links });
+  } else {
+    sendResponse(`no responce: ${message}`);
   }
 });
