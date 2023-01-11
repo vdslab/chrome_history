@@ -15,13 +15,7 @@ export default function HistoryChart({ nodes, links }) {
       return null;
     }
 
-    // console.log("props");
-    // console.log("nodes", nodes);
-    // console.log("links", links);
-
     const nodedata = nodes.map(({ data }) => {
-      console.log("nodes item", data);
-      console.log("nodes item id", data.id);
       return {
         data: {
           id: data.id,
@@ -30,11 +24,29 @@ export default function HistoryChart({ nodes, links }) {
         },
       };
     });
-    const linkdata = links;
-    // console.log("data format");
-    // console.log("nodes", nodedata);
-    // console.log("link", linkdata);
-    return { nodes: nodedata, edges: linkdata };
+
+    const linkdata = links.map(({ data }) => {
+      return {
+        data: {
+          target: data.target,
+          source: data.source,
+        },
+      };
+    });
+    // objectの重複をなくす
+    const edges = Array.from(
+      new Map(
+        linkdata.map((item) => {
+          const key = item.data.target + item.data.source;
+          return [key, item];
+        })
+      ).values()
+    );
+
+    return {
+      nodes: nodedata,
+      edges,
+    };
   }, [nodes, links]);
 
   if (graphData === null) {
