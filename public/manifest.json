@@ -3,13 +3,9 @@
   "name": "History Override",
   "description": "Overrides the History Page",
   "version": "1.0",
-  "chrome_url_overrides": {
-    "history": "history.html"
-  },
-  "action": {
-    "default_title": "History"
-  },
-  "permissions": ["history", "chrome://favicon/"],
+  "chrome_url_overrides": { "history": "index.html" },
+  "action": { "default_title": "History", "default_popup": "index.html" },
+  "permissions": ["history"],
   "icons": {
     "16": "history16.png",
     "32": "history32.png",
