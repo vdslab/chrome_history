@@ -21,6 +21,7 @@ export default function HistoryChart({ nodes, links }) {
           id: data.id,
           label: data.id,
           type: "node",
+          url: data.url,
         },
       };
     });
