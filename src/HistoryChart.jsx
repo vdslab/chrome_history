@@ -19,7 +19,7 @@ export default function HistoryChart({ nodes, links }) {
       return {
         data: {
           id: data.id,
-          label: data.url,
+          label: data.id,
           type: "node",
         },
       };
