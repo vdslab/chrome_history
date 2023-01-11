@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import cytoscape from "cytoscape";
 import CytoscapeComponent from "react-cytoscapejs";
 import cola from "cytoscape-cola";
@@ -92,6 +92,24 @@ export default function HistoryChart({ nodes, links }) {
 
     return { graphData };
   }, [nodes, links]);
+
+  useEffect(() => {
+    const cy = cyRef.current;
+    if (cy === null) {
+      return;
+    }
+
+    const vertical = links.map(({ data }) => {
+      return [
+        { node: cy.$id(data.source), offset: 0 },
+        { node: cy.$id(data.target), offset: 0 },
+      ];
+    });
+    const layout = defaultLayout;
+    layout.alignment = { vertical };
+    console.log(layout);
+    cy.layout(layout).run();
+  }, [graphData]);
 
   if (graphData === null) {
     return (
