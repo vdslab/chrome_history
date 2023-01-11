@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from "react";
 import HistoryChart from "./HistoryChart";
-// import data from "./_dammy.json";
-
-// const node = [];
-// const nodeIDs = [];
-// const link = [];
 
 const App = () => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
-  const nodeIDs = [];
+  const [nodeIDs, setNodeIds] = useState([]);
   useEffect(() => {
     // TODO: 何もしないので別の関数に切り出したい
-  }, [nodes, links]);
+  }, [nodeIDs]);
 
   chrome.history.onVisited.addListener((re) => {
     if (!nodeIDs.includes(re.id)) {
       nodes.push({ data: { id: re.id, url: re.url } });
       setNodes([...nodes]);
       nodeIDs.push(re.id);
+      setNodeIds([...nodeIDs]);
     }
 
     if (nodeIDs.length !== 1) {
@@ -27,8 +23,6 @@ const App = () => {
       });
       setLinks([...links]);
     }
-    // console.log(node);
-    // console.log(link);
   });
 
   return (
