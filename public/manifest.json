@@ -3,7 +3,6 @@
   "name": "History Override",
   "description": "Overrides the History Page",
   "version": "1.0",
-  "chrome_url_overrides": { "history": "index.html" },
   "action": { "default_title": "History", "default_popup": "index.html" },
   "permissions": ["history"],
   "icons": {
