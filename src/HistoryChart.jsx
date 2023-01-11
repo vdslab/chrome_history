@@ -8,6 +8,10 @@ cytoscape.use(cola);
 export default function HistoryChart(props) {
   const graphData = useMemo(() => {
     const { nodes, links } = props;
+    if (!nodes || !links) {
+      return null;
+    }
+
     const nodedata = nodes.map(({ name }, index) => {
       return {
         data: {
@@ -28,6 +32,14 @@ export default function HistoryChart(props) {
     });
     return { nodes: nodedata, edges: linkdata };
   }, [props]);
+
+  if (graphData === null) {
+    return (
+      <div>
+        <p>loading</p>
+      </div>
+    );
+  }
 
   const width = "800px";
   const height = "600px";
