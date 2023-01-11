@@ -180,7 +180,7 @@ export default function HistoryChart({ nodes, links }) {
           layout={layout}
           stylesheet={styleSheet}
           cy={(cy) => {
-            cyRef.current = cy;
+            setCy(cy);
             console.log("EVT", cy);
 
             cy.on("tap", "node", (evt) => {
