@@ -9,11 +9,11 @@ export default function HistoryChart({ nodes, links }) {
   const cyRef = useRef(null);
   console.log("history chart");
 
-  const graphData = useMemo(() => {
+  const { graphData } = useMemo(() => {
     // const { nodes, links } = props;
     if (nodes.length === 0 || links.length === 0) {
       console.log("node or link is none");
-      return null;
+      return { graphData: null };
     }
 
     const nodedata = nodes.map(({ data }) => {
@@ -45,10 +45,12 @@ export default function HistoryChart({ nodes, links }) {
       ).values()
     );
 
-    return {
+    const graphData = {
       nodes: nodedata,
       edges,
     };
+
+    return { graphData };
   }, [nodes, links]);
 
   if (graphData === null) {
