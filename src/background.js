@@ -13,9 +13,13 @@ chrome.history.onVisited.addListener((re) => {
       data: { target: re.id, source: nodeIDs[nodeIDs.length - 2] },
     });
     chrome.runtime.sendMessage("ready-post-data", (response) => {
-      console.log("received ", response);
+      // console.log("received ", response);
     });
   }
+});
+
+chrome.history.onVisitRemoved.addListener((item) => {
+  console.log("remove", item);
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

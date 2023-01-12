@@ -8,7 +8,7 @@ const defaultLayout = {
   name: "cola",
   animate: true,
   // refresh: 1, // number of ticks per frame; higher is faster but more jerky
-  maxSimulationTime: 3000, // max length in ms to run the layout6    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
+  maxSimulationTime: 2000, // max length in ms to run the layout6    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
   fit: true, // on every layout reposition of nodes, fit the viewport
   padding: 30, // padding around the simulation
   // boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
@@ -38,9 +38,9 @@ const defaultLayout = {
   edgeJaccardLength: undefined, // jaccard edge length in simulation
 
   // iterations of cola algorithm; uses default values on undefined
-  unconstrIter: 30, // unconstrained initial layout iterations
-  userConstIter: 20, // initial layout iterations with user-specified constraints
-  allConstIter: 20, // initial layout iterations with all constraints including non-overlap
+  unconstrIter: 5, // unconstrained initial layout iterations
+  userConstIter: 5, // initial layout iterations with user-specified constraints
+  allConstIter: 5, // initial layout iterations with all constraints including non-overlap
 };
 
 cytoscape.use(cola);
@@ -107,7 +107,7 @@ export default function HistoryChart({ nodes, links }) {
     });
     const layout = defaultLayout;
     layout.alignment = { vertical };
-    console.log(layout);
+    // console.log(layout);
     cy.layout(layout).run();
   }, [graphData]);
 
@@ -209,6 +209,7 @@ export default function HistoryChart({ nodes, links }) {
               console.log("TARGET", node.data());
               console.log("TARGET TYPE", typeof node[0]);
               console.log("TARGET URL", node.data().url);
+              chrome.tabs.create({ url: node.data().url });
             });
           }}
           // abc={console.log("myCyRef", myCyRef)}

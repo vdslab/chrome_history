@@ -17,6 +17,8 @@ const App = () => {
     } else {
       sendResponse("not get");
     }
+    var referrer = document.referrer;
+    console.log("ref", referrer);
   });
 
   return (
