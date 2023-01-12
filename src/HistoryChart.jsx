@@ -5,10 +5,23 @@ import cola from "cytoscape-cola";
 
 cytoscape.use(cola);
 
+<<<<<<< Updated upstream
 export default function HistoryChart(props) {
   const graphData = useMemo(() => {
     const { nodes, links } = props;
     const nodedata = nodes.map(({ name }, index) => {
+=======
+export default function HistoryChart({ nodes, links }) {
+  const cyRef = useRef(null);
+
+  const { graphData } = useMemo(() => {
+    // const { nodes, links } = props;
+    if (nodes.length === 0 || links.length === 0) {
+      return { graphData: null };
+    }
+
+    const nodedata = nodes.map(({ data }) => {
+>>>>>>> Stashed changes
       return {
         data: {
           id: index,
@@ -26,8 +39,54 @@ export default function HistoryChart(props) {
         },
       };
     });
+<<<<<<< Updated upstream
     return { nodes: nodedata, edges: linkdata };
   }, [props]);
+=======
+    // objectの重複をなくす
+    const edges = Array.from(
+      new Map(
+        linkdata.map((item) => {
+          const key = item.data.target + item.data.source;
+          return [key, item];
+        })
+      ).values()
+    );
+
+    const graphData = {
+      nodes: nodedata,
+      edges,
+    };
+
+    return { graphData };
+  }, [nodes, links]);
+
+  useEffect(() => {
+    const cy = cyRef.current;
+    if (cy === null) {
+      return;
+    }
+
+    // const vertical = links.map(({ data }) => {
+    //   return [
+    //     { node: cy.$id(data.source), offset: 0 },
+    //     { node: cy.$id(data.target), offset: 0 },
+    //   ];
+    // });
+    const layout = defaultLayout;
+    // layout.alignment = { vertical };
+    // console.log(layout);
+    cy.layout(layout).run();
+  }, [graphData]);
+
+  if (graphData === null) {
+    return (
+      <div>
+        <p>loading</p>
+      </div>
+    );
+  }
+>>>>>>> Stashed changes
 
   const width = "800px";
   const height = "600px";
@@ -147,8 +206,13 @@ export default function HistoryChart(props) {
           layout={layout}
           stylesheet={styleSheet}
           cy={(cy) => {
+<<<<<<< Updated upstream
             // myCyRef.current = cy;
             console.log("EVT", cy);
+=======
+            cyRef.current = cy;
+            // console.log("EVT", cy);
+>>>>>>> Stashed changes
 
             cy.on("tap", "node", (evt) => {
               var node = evt.target;
