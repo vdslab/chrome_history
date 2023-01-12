@@ -47,12 +47,10 @@ cytoscape.use(cola);
 
 export default function HistoryChart({ nodes, links }) {
   const cyRef = useRef(null);
-  console.log("history chart");
 
   const { graphData } = useMemo(() => {
     // const { nodes, links } = props;
     if (nodes.length === 0 || links.length === 0) {
-      console.log("node or link is none");
       return { graphData: null };
     }
 
@@ -75,6 +73,7 @@ export default function HistoryChart({ nodes, links }) {
         },
       };
     });
+
     // objectの重複をなくす
     const edges = Array.from(
       new Map(
@@ -99,14 +98,15 @@ export default function HistoryChart({ nodes, links }) {
       return;
     }
 
-    const vertical = links.map(({ data }) => {
-      return [
-        { node: cy.$id(data.source), offset: 0 },
-        { node: cy.$id(data.target), offset: 0 },
-      ];
-    });
+    // const vertical = links.map(({ data }) => {
+    //   return [
+    //     { node: cy.$id(data.source), offset: 0 },
+    //     { node: cy.$id(data.target), offset: 0 },
+    //   ];
+    // });
     const layout = defaultLayout;
-    layout.alignment = { vertical };
+    // layout.alignment = { vertical };
+
     // console.log(layout);
     cy.layout(layout).run();
   }, [graphData]);
@@ -200,8 +200,9 @@ export default function HistoryChart({ nodes, links }) {
           layout={layout}
           stylesheet={styleSheet}
           cy={(cy) => {
-            cyRef.current = cy;
             console.log("EVT", cy);
+            cyRef.current = cy;
+            // console.log("EVT", cy);
 
             cy.on("tap", "node", (evt) => {
               var node = evt.target;
