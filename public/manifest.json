@@ -4,11 +4,14 @@
   "description": "履歴を階層構造っぽく描画する",
   "version": "1.0",
   "action": { "default_title": "History Tree", "default_popup": "index.html" },
-  "permissions": ["history"],
+  "permissions": ["history", "tabs", "nativeMessaging"],
   "icons": {
     "16": "history16.png",
     "32": "history32.png",
     "48": "history48.png",
     "128": "history128.png"
+  },
+  "background": {
+    "service_worker": "js/background.js"
   }
 }
