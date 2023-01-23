@@ -2,10 +2,11 @@ const nodes = [];
 const links = [];
 const nodeIDs = [];
 const noderelative = [];
+const family = [];
 
 chrome.history.onVisited.addListener((re) => {
   if (!nodeIDs.includes(re.id)) {
-    nodes.push({ data: { id: re.id, url: re.url } });
+    nodes.push({ data: { id: re.id, url: re.url, title: re.title } });
   }
   nodeIDs.push(re.id);
 
@@ -13,6 +14,17 @@ chrome.history.onVisited.addListener((re) => {
     links.push({
       data: { target: re.id, source: nodeIDs[nodeIDs.length - 2] },
     });
+
+    const foundindex = family.findIndex(
+      (element) => element.data.parent === nodeIDs[nodeIDs.length - 2]
+    );
+    if (foundindex !== -1) {
+      family[foundindex].data.children.push(re.id);
+    } else {
+      family.push({
+        data: { children: [re.id], parent: nodeIDs[nodeIDs.length - 2] },
+      });
+    }
 
     if (
       nodeIDs.length >= 3 &&
@@ -29,8 +41,9 @@ chrome.history.onVisited.addListener((re) => {
       // console.log("received ", response);
     });
   }
-  console.log(nodeIDs);
-  console.log(links);
+  // console.log(nodeIDs);
+  // console.log(links);
+  // console.log(family);
 
   // if(nodeIDs.lingth === 1){
   //   noderelative.push({parent:re.id, children:0})

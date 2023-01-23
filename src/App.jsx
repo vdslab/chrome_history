@@ -9,8 +9,8 @@ const App = () => {
     if (message === "ready-post-data") {
       sendResponse("ok");
       chrome.runtime.sendMessage("get-data", (response) => {
-        console.log("received data", response);
-        const { nodes, links } = response;
+        // console.log("received data", response);
+        // const { nodes, links } = response;
         setNodes(nodes);
         setLinks(links);
       });
@@ -18,7 +18,7 @@ const App = () => {
       sendResponse("not get");
     }
     var referrer = document.referrer;
-    console.log("ref", referrer);
+    // console.log("ref", referrer);
   });
 
   return (
