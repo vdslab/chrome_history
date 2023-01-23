@@ -43,7 +43,7 @@ chrome.history.onVisited.addListener((re) => {
   }
   // console.log(nodeIDs);
   // console.log(links);
-  // console.log(family);
+  console.log(family);
 
   // if(nodeIDs.lingth === 1){
   //   noderelative.push({parent:re.id, children:0})
