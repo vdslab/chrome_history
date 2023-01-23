@@ -178,7 +178,7 @@ export default function HistoryChart({ nodes, links }) {
         "line-color": "#AAD8FF",
         "target-arrow-color": "#6774cb",
         "target-arrow-shape": "triangle",
-        "curve-style": "bezier",
+        "curve-style": "unbundled-bezier",
       },
     },
   ];
