@@ -11,21 +11,34 @@ chrome.history.onVisited.addListener((re) => {
   nodeIDs.push(re.id);
 
   if (nodeIDs.length !== 1) {
-    links.push({
-      data: { target: re.id, source: nodeIDs[nodeIDs.length - 2] },
-    });
+    // links.push({
+    //   data: { target: re.id, source: nodeIDs[nodeIDs.length - 2] },
+    // });
 
+    const alreadyParent = family.find(
+      ({ data: { parent, children } }) => re.id === parent
+    );
     const foundindex = family.findIndex(
       (element) => element.data.parent === nodeIDs[nodeIDs.length - 2]
     );
     if (foundindex !== -1) {
-      family[foundindex].data.children.push(re.id);
-    } else {
+      const newChild = [
+        ...new Set([...family[foundindex].data.children, re.id]),
+      ];
+      family[foundindex].data.children = newChild;
+    } else if (!alreadyParent) {
       family.push({
         data: { children: [re.id], parent: nodeIDs[nodeIDs.length - 2] },
       });
     }
 
+    links.push({
+      data: {
+        target: re.id,
+        source: nodeIDs[nodeIDs.length - 2],
+        back: alreadyParent,
+      },
+    });
     if (
       nodeIDs.length >= 3 &&
       nodeIDs[nodeIDs.length - 1] === nodeIDs[nodeIDs.length - 3]
@@ -43,7 +56,7 @@ chrome.history.onVisited.addListener((re) => {
   }
   // console.log(nodeIDs);
   // console.log(links);
-  console.log(family);
+  // console.log(family);
 
   // if(nodeIDs.lingth === 1){
   //   noderelative.push({parent:re.id, children:0})
@@ -52,7 +65,7 @@ chrome.history.onVisited.addListener((re) => {
   // }
 });
 
-chrome.history.onVisitRemoved.addListener((item) => { });
+chrome.history.onVisitRemoved.addListener((item) => {});
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === "get-data") {

@@ -26,7 +26,7 @@ const defaultLayout = {
   nodeSpacing: function (node) {
     return 10;
   }, // extra spacing around nodes
-  flow: { axis: "y", minSeparation: 30 }, // use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }
+  flow: undefined, // use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }
   alignment: undefined, // relative alignment constraints on nodes, e.g. {vertical: [[{node: node1, offset: 0}, {node: node2, offset: 5}]], horizontal: [[{node: node3}, {node: node4}], [{node: node5}, {node: node6}]]}
   gapInequalities: undefined, // list of inequality constraints for the gap between the nodes, e.g. [{"axis":"y", "left":node1, "right":node2, "gap":25}]
   centerGraph: true, // adjusts the node positions initially to center the graph (pass false if you want to start the layout from the current position)
@@ -58,7 +58,7 @@ export default function HistoryChart({ nodes, links, family }) {
       return {
         data: {
           id: data.id,
-          label: data.id,
+          label: data.title,
           type: "node",
           url: data.url,
         },
@@ -101,27 +101,27 @@ export default function HistoryChart({ nodes, links, family }) {
     const layout = defaultLayout;
 
     if (family.length === 0) {
-      console.log(layout.alignment);
+      // console.log(layout.alignment);
       cy.layout(layout).run();
       return;
     }
 
-    const newFamily = family.reduce(
-      (nowFamily, { data: { parent, children } }) => {
-        const isNotParentChildren = children.map((id) => {
-          const isParentChildren = nowFamily.filter(
-            ({ data: { parent, children } }) => id === parent
-          );
-          return isParentChildren.length === 0;
-        });
-        console.log("now", nowFamily);
-        console.log("is not", isNotParentChildren);
-        return nowFamily.concat(isNotParentChildren);
-      },
-      []
-    );
-    console.log("old", family);
-    console.log("new", newFamily);
+    // const newFamily = family.reduce(
+    //   (nowFamily, { data: { parent, children } }) => {
+    //     const isNotParentChildren = children.map((id) => {
+    //       const isParentChildren = nowFamily.filter(
+    //         ({ data: { parent, children } }) => id === parent
+    //       );
+    //       return isParentChildren.length === 0;
+    //     });
+    //     console.log("now", nowFamily);
+    //     console.log("is not", isNotParentChildren);
+    //     return nowFamily.concat(isNotParentChildren);
+    //   },
+    //   []
+    // );
+    // console.log("old", family);
+    // console.log("new", newFamily);
 
     const verticalArrays = family.map(({ data: { parent, children } }) => {
       const childrenNode = children.map((id, index) => {
@@ -137,8 +137,26 @@ export default function HistoryChart({ nodes, links, family }) {
       []
     );
 
-    console.log("vertical", vertical);
-    layout.alignment = { vertical };
+    const constraintVerticalArrays = family.map(
+      ({ data: { parent, children } }) => {
+        return children.map((id) => {
+          return {
+            axis: "y",
+            left: cy.$id(parent),
+            right: cy.$id(id),
+            gap: 75,
+          };
+        });
+      }
+    );
+    const constraintVertical = constraintVerticalArrays.reduce(
+      (data, current) => current.concat(data)
+    );
+
+    console.log("family", family);
+    console.log("family vertical", constraintVertical);
+    // layout.alignment = { vertical };
+    layout.gapInequalities = constraintVertical;
 
     cy.layout(layout).run();
   }, [graphData]);
@@ -210,6 +228,7 @@ export default function HistoryChart({ nodes, links, family }) {
         "line-color": "#AAD8FF",
         "target-arrow-color": "#6774cb",
         "target-arrow-shape": "triangle",
+        "source-arrow-shape": "triangle",
         "curve-style": "unbundled-bezier",
       },
     },
