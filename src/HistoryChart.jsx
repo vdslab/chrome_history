@@ -223,7 +223,7 @@ export default function HistoryChart({ nodes, links, family }) {
               console.log("TARGET", node.data());
               console.log("TARGET TYPE", typeof node[0]);
               console.log("TARGET URL", node.data().url);
-              chrome.tabs.create({ url: node.data().url });
+              // chrome.tabs.create({ url: node.data().url });
             });
           }}
           // abc={console.log("myCyRef", myCyRef)}
