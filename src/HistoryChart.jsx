@@ -45,7 +45,7 @@ const defaultLayout = {
 
 cytoscape.use(cola);
 
-export default function HistoryChart({ nodes, links }) {
+export default function HistoryChart({ nodes, links, family }) {
   const cyRef = useRef(null);
 
   const { graphData } = useMemo(() => {
@@ -98,16 +98,29 @@ export default function HistoryChart({ nodes, links }) {
       return;
     }
 
-    // const vertical = links.map(({ data }) => {
-    //   return [
-    //     { node: cy.$id(data.source), offset: 0 },
-    //     { node: cy.$id(data.target), offset: 0 },
-    //   ];
-    // });
     const layout = defaultLayout;
-    // layout.alignment = { vertical };
+    if (family.length === 0) {
+      cy.layout(layout).run();
+      return;
+    }
 
-    // console.log(layout);
+    const verticalArrays = family.map(({ data: { parent, children } }) => {
+      return children.map((id) => {
+        return [
+          { node: cy.$id(parent), offset: 0 },
+          { node: cy.$id(id), offset: 0 },
+        ];
+      });
+    });
+
+    const vertical = verticalArrays.reduce(
+      (data, current) => current.concat(data),
+      []
+    );
+
+    console.log("vertical", vertical);
+    layout.alignment = { vertical };
+
     cy.layout(layout).run();
   }, [graphData]);
 
