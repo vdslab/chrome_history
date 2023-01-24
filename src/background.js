@@ -52,11 +52,11 @@ chrome.history.onVisited.addListener((re) => {
   // }
 });
 
-chrome.history.onVisitRemoved.addListener((item) => {});
+chrome.history.onVisitRemoved.addListener((item) => { });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === "get-data") {
-    sendResponse({ nodes, links });
+    sendResponse({ nodes, links, family });
   } else {
     sendResponse(`no responce: ${message}`);
   }
