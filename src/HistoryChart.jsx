@@ -99,17 +99,36 @@ export default function HistoryChart({ nodes, links, family }) {
     }
 
     const layout = defaultLayout;
+
     if (family.length === 0) {
+      console.log(layout.alignment);
       cy.layout(layout).run();
       return;
     }
 
+    const newFamily = family.reduce(
+      (nowFamily, { data: { parent, children } }) => {
+        const isNotParentChildren = children.map((id) => {
+          const isParentChildren = nowFamily.filter(
+            ({ data: { parent, children } }) => id === parent
+          );
+          return isParentChildren.length === 0;
+        });
+        console.log("now", nowFamily);
+        console.log("is not", isNotParentChildren);
+        return nowFamily.concat(isNotParentChildren);
+      },
+      []
+    );
+    console.log("old", family);
+    console.log("new", newFamily);
+
     const verticalArrays = family.map(({ data: { parent, children } }) => {
-      return children.map((id) => {
-        return [
-          { node: cy.$id(parent), offset: 0 },
-          { node: cy.$id(id), offset: 0 },
-        ];
+      const childrenNode = children.map((id, index) => {
+        return { node: cy.$id(id), offset: 50 * index };
+      });
+      return childrenNode.map((node) => {
+        return [{ node: cy.$id(parent), offset: 0 }, node];
       });
     });
 
