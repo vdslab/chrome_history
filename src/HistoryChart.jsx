@@ -8,7 +8,7 @@ const defaultLayout = {
   name: "cola",
   animate: true,
   // refresh: 1, // number of ticks per frame; higher is faster but more jerky
-  maxSimulationTime: 2000, // max length in ms to run the layout6    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
+  maxSimulationTime: 3000, // max length in ms to run the layout6    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
   fit: true, // on every layout reposition of nodes, fit the viewport
   padding: 30, // padding around the simulation
   // boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
@@ -26,7 +26,7 @@ const defaultLayout = {
   nodeSpacing: function (node) {
     return 10;
   }, // extra spacing around nodes
-  flow: undefined, // use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }
+  flow: { axis: "y", minSeparation: 30 }, // use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }
   alignment: undefined, // relative alignment constraints on nodes, e.g. {vertical: [[{node: node1, offset: 0}, {node: node2, offset: 5}]], horizontal: [[{node: node3}, {node: node4}], [{node: node5}, {node: node6}]]}
   gapInequalities: undefined, // list of inequality constraints for the gap between the nodes, e.g. [{"axis":"y", "left":node1, "right":node2, "gap":25}]
   centerGraph: true, // adjusts the node positions initially to center the graph (pass false if you want to start the layout from the current position)
@@ -54,7 +54,7 @@ export default function HistoryChart({ nodes, links, family }) {
       return { graphData: null };
     }
 
-    const nodedata = nodes.map(({ data }) => {
+    const nodeBodyData = nodes.map(({ data }) => {
       return {
         data: {
           id: data.id,
@@ -65,11 +65,38 @@ export default function HistoryChart({ nodes, links, family }) {
       };
     });
 
+    const nodeGhostData = nodes.map(({ data }) => {
+      return {
+        data: {
+          id: `ghost-${data.id}`,
+          label: "ghost",
+          type: "ghost",
+        },
+        // locked: true,
+      };
+    });
+
+    const nodedata = nodeBodyData.concat(nodeGhostData);
+    // const nodedata = nodeBodyData;
+    console.log("link", links);
+    console.log("family", family);
+
     const linkdata = links.map(({ data }) => {
+      if (data.back) {
+        return {
+          data: {
+            target: data.source,
+            // source: `ghost-${data.target}`,
+            source: data.target,
+            isBack: data.isBack,
+          },
+        };
+      }
       return {
         data: {
           target: data.target,
           source: data.source,
+          isBack: data.isBack,
         },
       };
     });
@@ -101,41 +128,23 @@ export default function HistoryChart({ nodes, links, family }) {
     const layout = defaultLayout;
 
     if (family.length === 0) {
-      // console.log(layout.alignment);
       cy.layout(layout).run();
       return;
     }
 
-    // const newFamily = family.reduce(
-    //   (nowFamily, { data: { parent, children } }) => {
-    //     const isNotParentChildren = children.map((id) => {
-    //       const isParentChildren = nowFamily.filter(
-    //         ({ data: { parent, children } }) => id === parent
-    //       );
-    //       return isParentChildren.length === 0;
-    //     });
-    //     console.log("now", nowFamily);
-    //     console.log("is not", isNotParentChildren);
-    //     return nowFamily.concat(isNotParentChildren);
-    //   },
+    // const verticalArrays = family.map(({ data: { parent, children } }) => {
+    //   const childrenNode = children.map((id, index) => {
+    //     return { node: cy.$id(id), offset: 50 * index };
+    //   });
+    //   return childrenNode.map((node) => {
+    //     return [{ node: cy.$id(parent), offset: 0 }, node];
+    //   });
+    // });
+
+    // const vertical = verticalArrays.reduce(
+    //   (data, current) => current.concat(data),
     //   []
     // );
-    // console.log("old", family);
-    // console.log("new", newFamily);
-
-    const verticalArrays = family.map(({ data: { parent, children } }) => {
-      const childrenNode = children.map((id, index) => {
-        return { node: cy.$id(id), offset: 50 * index };
-      });
-      return childrenNode.map((node) => {
-        return [{ node: cy.$id(parent), offset: 0 }, node];
-      });
-    });
-
-    const vertical = verticalArrays.reduce(
-      (data, current) => current.concat(data),
-      []
-    );
 
     const constraintVerticalArrays = family.map(
       ({ data: { parent, children } }) => {
@@ -153,10 +162,42 @@ export default function HistoryChart({ nodes, links, family }) {
       (data, current) => current.concat(data)
     );
 
-    console.log("family", family);
-    console.log("family vertical", constraintVertical);
-    // layout.alignment = { vertical };
-    layout.gapInequalities = constraintVertical;
+    const constraintHorizontalArrays = family.map(({ data: { children } }) => {
+      if (children.length <= 1) {
+        return;
+      }
+
+      const constraints = children.map((id, index) => {
+        if (index === children.length - 1) {
+          return;
+        }
+
+        return {
+          axis: "x",
+          left: cy.$id(id),
+          right: cy.$id(children[index + 1]),
+          gap: 75,
+        };
+      });
+
+      return constraints.filter((item) => item);
+    });
+
+    const constraintorizontal = constraintHorizontalArrays
+      .filter((item) => item)
+      .reduce((data, current) => current.concat(data), []);
+    console.log("reduce", constraintorizontal);
+
+    const constraints = constraintVertical.concat(constraintorizontal);
+    console.log("concat", constraints);
+
+    // layout.alignment = { vertical: rootVerticalAlignment };
+    layout.gapInequalities = constraints;
+
+    const bodyNodes = cy.filter("node[type='node']");
+    bodyNodes.forEach((node) => {
+      cy.$id(`ghost-${node.data().id}`).position("x", node.position("x"));
+    });
 
     cy.layout(layout).run();
   }, [graphData]);
@@ -215,9 +256,12 @@ export default function HistoryChart({ nodes, links, family }) {
       },
     },
     {
-      selector: "node[type='device']",
+      selector: "node[type='ghost']",
       style: {
         shape: "rectangle",
+        // disply: none,
+        opacity: 0,
+        // visibility: "hidden",
       },
     },
     {
@@ -228,11 +272,24 @@ export default function HistoryChart({ nodes, links, family }) {
         "line-color": "#AAD8FF",
         "target-arrow-color": "#6774cb",
         "target-arrow-shape": "triangle",
+        "curve-style": "unbundled-bezier",
+      },
+    },
+    {
+      selector: "edge[?isBack]",
+      style: {
+        width: 3,
+        "line-color": "#6774cb",
+        // "line-color": "#AAD8FF",
+        "target-arrow-color": "#ff74cb",
+        "target-arrow-shape": "triangle",
         "source-arrow-shape": "triangle",
         "curve-style": "unbundled-bezier",
       },
     },
   ];
+
+  // console.log(CytoscapeComponent.normalizeElements(graphData));
 
   return (
     <div>
@@ -258,7 +315,7 @@ export default function HistoryChart({ nodes, links, family }) {
             cy.on("tap", "node", (evt) => {
               var node = evt.target;
               console.log("EVT", evt);
-              console.log("TARGET", node.data());
+              console.log("TARGET", node.data().position());
               console.log("TARGET TYPE", typeof node[0]);
               console.log("TARGET URL", node.data().url);
               // chrome.tabs.create({ url: node.data().url });
