@@ -5,6 +5,15 @@ const App = () => {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
 
+  useEffect(() => {
+    chrome.runtime.sendMessage("get-data", (response) => {
+      const { nodes, links } = response;
+      setNodes(nodes);
+      setLinks(links);
+      return true;
+    });
+  }, []);
+
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message === "ready-post-data") {
       sendResponse("ok");
