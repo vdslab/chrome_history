@@ -8,11 +8,11 @@ const defaultLayout = {
   name: "cola",
   animate: true,
   // refresh: 1, // number of ticks per frame; higher is faster but more jerky
-  maxSimulationTime: 3000, // max length in ms to run the layout6    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
+  maxSimulationTime: 0, // max length in ms to run the layout6    ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
   fit: true, // on every layout reposition of nodes, fit the viewport
   padding: 30, // padding around the simulation
   // boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-  // nodeDimensionsIncludeLabels: false, // whether labels should be included in determining the space used by a node
+  nodeDimensionsIncludeLabels: true, // whether labels should be included in determining the space used by a node
 
   // // layout event callbacks
   // ready: function () {}, // on layoutready
@@ -20,7 +20,7 @@ const defaultLayout = {
 
   // positioning options
   randomize: false, // use random node positions at beginning of layout
-  avoidOverlap: true, // if true, prevents overlap of node bounding boxes
+  avoidOverlap: false, // if true, prevents overlap of node bounding boxes
   handleDisconnected: true, // if true, avoids disconnected components from overlapping
   convergenceThreshold: 0.05, // when the alpha value (system energy) falls below this value, the layout stops
   nodeSpacing: function (node) {
@@ -38,9 +38,9 @@ const defaultLayout = {
   edgeJaccardLength: undefined, // jaccard edge length in simulation
 
   // iterations of cola algorithm; uses default values on undefined
-  unconstrIter: 5, // unconstrained initial layout iterations
-  userConstIter: 5, // initial layout iterations with user-specified constraints
-  allConstIter: 5, // initial layout iterations with all constraints including non-overlap
+  unconstrIter: 10, // unconstrained initial layout iterations
+  userConstIter: 10, // initial layout iterations with user-specified constraints
+  allConstIter: 10, // initial layout iterations with all constraints including non-overlap
 };
 
 cytoscape.use(cola);
@@ -49,7 +49,6 @@ export default function HistoryChart({ nodes, links, family }) {
   const cyRef = useRef(null);
 
   const { graphData } = useMemo(() => {
-    // const { nodes, links } = props;
     if (nodes.length === 0 || links.length === 0) {
       return { graphData: null };
     }
@@ -72,22 +71,17 @@ export default function HistoryChart({ nodes, links, family }) {
           label: "ghost",
           type: "ghost",
         },
-        // locked: true,
       };
     });
 
     const nodedata = nodeBodyData.concat(nodeGhostData);
-    // const nodedata = nodeBodyData;
-    console.log("link", links);
-    console.log("family", family);
 
     const linkdata = links.map(({ data }) => {
-      if (data.back) {
+      if (data.isBack) {
         return {
           data: {
             target: data.source,
-            // source: `ghost-${data.target}`,
-            source: data.target,
+            source: `ghost-${data.target}`,
             isBack: data.isBack,
           },
         };
@@ -140,11 +134,11 @@ export default function HistoryChart({ nodes, links, family }) {
     //     return [{ node: cy.$id(parent), offset: 0 }, node];
     //   });
     // });
-
     // const vertical = verticalArrays.reduce(
     //   (data, current) => current.concat(data),
     //   []
     // );
+    // layout.alignment = { vertical: rootVerticalAlignment };
 
     const constraintVerticalArrays = family.map(
       ({ data: { parent, children } }) => {
@@ -158,6 +152,7 @@ export default function HistoryChart({ nodes, links, family }) {
         });
       }
     );
+
     const constraintVertical = constraintVerticalArrays.reduce(
       (data, current) => current.concat(data)
     );
@@ -186,18 +181,37 @@ export default function HistoryChart({ nodes, links, family }) {
     const constraintorizontal = constraintHorizontalArrays
       .filter((item) => item)
       .reduce((data, current) => current.concat(data), []);
-    console.log("reduce", constraintorizontal);
 
     const constraints = constraintVertical.concat(constraintorizontal);
-    console.log("concat", constraints);
 
-    // layout.alignment = { vertical: rootVerticalAlignment };
     layout.gapInequalities = constraints;
 
     const bodyNodes = cy.filter("node[type='node']");
     bodyNodes.forEach((node) => {
       cy.$id(`ghost-${node.data().id}`).position("x", node.position("x"));
     });
+
+    const stopEvent = () => {
+      cy.nodes().positions((node, i) => {
+        node.ungrabify();
+
+        if (node.data("type") == "ghost") {
+          const ghostTarget = node.data("id").split("-")[1];
+
+          return {
+            x: cy.$id(ghostTarget).position("x"),
+            y: cy.$id(ghostTarget).position("y"),
+          };
+        }
+
+        return {
+          x: node.position("x"),
+          y: node.position("y"),
+        };
+      });
+    };
+
+    layout.stop = stopEvent;
 
     cy.layout(layout).run();
   }, [graphData]);
@@ -214,9 +228,6 @@ export default function HistoryChart({ nodes, links, family }) {
   const height = "600px";
   const graphWidth = "80vw";
   const graphHeight = "80vh";
-
-  // const graphData = { nodes: nodes, edges: links };
-
   const layout = defaultLayout;
 
   const styleSheet = [
@@ -259,20 +270,18 @@ export default function HistoryChart({ nodes, links, family }) {
       selector: "node[type='ghost']",
       style: {
         shape: "rectangle",
-        // disply: none,
         opacity: 0,
-        // visibility: "hidden",
+        "z-index": 5,
       },
     },
     {
-      selector: "edge",
+      selector: "edge[!isBack]",
       style: {
         width: 3,
-        // "line-color": "#6774cb",
         "line-color": "#AAD8FF",
         "target-arrow-color": "#6774cb",
         "target-arrow-shape": "triangle",
-        "curve-style": "unbundled-bezier",
+        "curve-style": "bezier",
       },
     },
     {
@@ -280,16 +289,12 @@ export default function HistoryChart({ nodes, links, family }) {
       style: {
         width: 3,
         "line-color": "#6774cb",
-        // "line-color": "#AAD8FF",
-        "target-arrow-color": "#ff74cb",
-        "target-arrow-shape": "triangle",
         "source-arrow-shape": "triangle",
         "curve-style": "unbundled-bezier",
+        "control-point-distances": [-40, 40, -40],
       },
     },
   ];
-
-  // console.log(CytoscapeComponent.normalizeElements(graphData));
 
   return (
     <div>
@@ -311,7 +316,6 @@ export default function HistoryChart({ nodes, links, family }) {
           cy={(cy) => {
             console.log("EVT", cy);
             cyRef.current = cy;
-            // console.log("EVT", cy);
 
             cy.on("tap", "node", (evt) => {
               var node = evt.target;
@@ -322,7 +326,6 @@ export default function HistoryChart({ nodes, links, family }) {
               // chrome.tabs.create({ url: node.data().url });
             });
           }}
-          // abc={console.log("myCyRef", myCyRef)}
         />
       </div>
     </div>
