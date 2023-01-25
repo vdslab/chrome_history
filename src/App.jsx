@@ -26,7 +26,7 @@ const App = () => {
   return (
     <div>
       <h1>My new React App</h1>
-      <HistoryChart {...{ nodes, links }} />
+      <HistoryChart {...{ nodes, links, family }} />
       <button
         onClick={() => {
           chrome.tabs.create({
