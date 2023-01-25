@@ -20,7 +20,7 @@ const defaultLayout = {
 
   // positioning options
   randomize: false, // use random node positions at beginning of layout
-  avoidOverlap: false, // if true, prevents overlap of node bounding boxes
+  avoidOverlap: true, // if true, prevents overlap of node bounding boxes
   handleDisconnected: true, // if true, avoids disconnected components from overlapping
   convergenceThreshold: 0.05, // when the alpha value (system energy) falls below this value, the layout stops
   nodeSpacing: function (node) {
@@ -195,7 +195,7 @@ export default function HistoryChart({ nodes, links, family }) {
       cy.nodes().positions((node, i) => {
         node.ungrabify();
 
-        if (node.data("type") == "ghost") {
+        if (node.data("type") === "ghost") {
           const ghostTarget = node.data("id").split("-")[1];
 
           return {
