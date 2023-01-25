@@ -246,6 +246,7 @@ export default function HistoryChart({ nodes, links, family }) {
           zoomingEnabled={true}
           maxZoom={1.5}
           minZoom={0.3}
+          wheelSensitivity={0.05}
           autounselectify={false}
           boxSelectionEnabled={true}
           layout={layout}
