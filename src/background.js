@@ -38,18 +38,8 @@ chrome.history.onVisited.addListener((re) => {
     }
 
     chrome.runtime.sendMessage("ready-post-data", (response) => {
-      // console.log("received ", response);
     });
   }
-  // console.log(nodeIDs);
-  // console.log(links);
-  console.log(family);
-
-  // if(nodeIDs.lingth === 1){
-  //   noderelative.push({parent:re.id, children:0})
-  // }else{
-  //   noderelative.push({parent:nodeIDs[nodeIDs.length-2], children:re.id})
-  // }
 });
 
 chrome.history.onVisitRemoved.addListener((item) => {});
