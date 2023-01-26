@@ -29,7 +29,7 @@ export default function HistoryPage() {
       historys.forEach((history) => {
         getVisits({ url: history.url }).then((visit) => {
           visits.push(visit);
-          console.log(visit);
+          // console.log(visit);
           setVisits([...visits]);
         });
       });
@@ -42,6 +42,37 @@ export default function HistoryPage() {
   if (visits.length !== 0) {
     console.log("visits", visits);
   }
+
+  const node = visits.map((value) => {
+    return { id: value[0].id, index: 0 };
+  });
+
+  const findsource = (referringId) => {
+    if (referringId === 0) {
+      return;
+    } else {
+      for (const v of visits) {
+        for (const w of v) {
+          if (referringId === Number(w.visitId)) {
+            return w.id;
+          }
+        }
+      }
+    }
+  };
+
+  const links = visits.map((value) => {
+    return {
+      target: value[0].id,
+      source: value
+        .map((v) => {
+          return findsource(Number(v.referringVisitId));
+        })
+        .filter((element) => element !== undefined),
+    };
+  });
+  console.log("ノード", node);
+  console.log("リンク", links);
 
   return (
     <>
