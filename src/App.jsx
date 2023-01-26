@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HistoryChart from "./HistoryChart";
 
 const App = () => {
@@ -11,6 +11,7 @@ const App = () => {
       const { nodes, links } = response;
       setNodes(nodes);
       setLinks(links);
+      setFamily(family);
       return true;
     });
   }, []);
