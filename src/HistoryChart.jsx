@@ -45,7 +45,7 @@ const defaultLayout = {
 
 cytoscape.use(cola);
 
-export default function HistoryChart({ nodes, links }) {
+export default function HistoryChart({ nodes, links, family }) {
   const cyRef = useRef(null);
 
   const { graphData } = useMemo(() => {

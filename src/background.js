@@ -37,26 +37,15 @@ chrome.history.onVisited.addListener((re) => {
       links[links.length - 1].data.back = false;
     }
 
-    chrome.runtime.sendMessage("ready-post-data", (response) => {
-      // console.log("received ", response);
-    });
+    chrome.runtime.sendMessage("ready-post-data", (response) => {});
   }
-  // console.log(nodeIDs);
-  // console.log(links);
-  console.log(family);
-
-  // if(nodeIDs.lingth === 1){
-  //   noderelative.push({parent:re.id, children:0})
-  // }else{
-  //   noderelative.push({parent:nodeIDs[nodeIDs.length-2], children:re.id})
-  // }
 });
 
 chrome.history.onVisitRemoved.addListener((item) => {});
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === "get-data") {
-    sendResponse({ nodes, links });
+    sendResponse({ nodes, links, family });
   } else {
     sendResponse(`no responce: ${message}`);
   }
