@@ -22,10 +22,8 @@ const App = () => {
       chrome.runtime.sendMessage("get-data", (response) => {
         // console.log("received data", response);
         const { nodes, links, family } = response;
-        const { nodes, links, family } = response;
         setNodes(nodes);
         setLinks(links);
-        setFamily(family);
         setFamily(family);
       });
     } else {
@@ -38,7 +36,6 @@ const App = () => {
   return (
     <div>
       <h1>My new React App</h1>
-      <HistoryChart {...{ nodes, links, family }} />
       <HistoryChart {...{ nodes, links, family }} />
       <button
         onClick={() => {
