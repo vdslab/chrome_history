@@ -116,12 +116,14 @@ export default function HistoryChart({ nodes, links, family }) {
   useEffect(() => {
     const cy = cyRef.current;
     if (cy === null) {
+      console.log("cy null");
       return;
     }
 
     const layout = defaultLayout;
 
     if (family.length === 0) {
+      console.log("family null");
       cy.layout(layout).run();
       return;
     }
@@ -195,7 +197,7 @@ export default function HistoryChart({ nodes, links, family }) {
       cy.nodes().positions((node, i) => {
         node.ungrabify();
 
-        if (node.data("type") === "ghost") {
+        if (node.data("type") == "ghost") {
           const ghostTarget = node.data("id").split("-")[1];
 
           return {
