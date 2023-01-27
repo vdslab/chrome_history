@@ -27,6 +27,7 @@ export default function HistoryPage() {
     getHistorys(options).then((historys) => {
       setHistory(historys);
       historys.forEach((history) => {
+        console.log("id", history.id, "url", history.url);
         getVisits({ url: history.url }).then((visit) => {
           visits.push(visit);
           // console.log(visit);
@@ -54,24 +55,47 @@ export default function HistoryPage() {
       for (const v of visits) {
         for (const w of v) {
           if (referringId === Number(w.visitId)) {
-            return w.id;
+            return { id: w.id, time: w.visitTime };
           }
         }
       }
     }
   };
 
-  const links = visits.map((value) => {
+  const reverseFamily = visits.map((value) => {
     return {
       target: value[0].id,
       source: value
         .map((v) => {
-          return findsource(Number(v.referringVisitId));
+          const sourceid = findsource(Number(v.referringVisitId));
+          if (sourceid) {
+            return sourceid.id;
+          }
         })
-        .filter((element) => element !== undefined),
+        .filter((element) => element),
+      time: value
+        .map((w) => {
+          const sourcetime = findsource(Number(w.referringVisitId));
+          if (sourcetime) {
+            return sourcetime.time;
+          }
+        })
+        .filter((element) => element),
     };
   });
-  console.log("ノード", node);
+
+  const links = reverseFamily
+    .map((value) => {
+      const data = value;
+      return value.source.map((element, index) => {
+        return { taeget: data.target, source: element, time: data.time[index] };
+      });
+    })
+    .filter((element) => element.length)
+    .flat();
+
+  // console.log("ノード", node);
+  console.log("リヴァー氏", reverseFamily);
   console.log("リンク", links);
 
   return (
