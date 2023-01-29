@@ -320,11 +320,11 @@ export default function HistoryChart({ nodes, links, family }) {
             cyRef.current = cy;
 
             cy.on("tap", "node", (evt) => {
-              var node = evt.target;
-              console.log("EVT", evt);
-              console.log("TARGET", node.data().position());
-              console.log("TARGET TYPE", typeof node[0]);
-              console.log("TARGET URL", node.data().url);
+              // var node = evt.target;
+              // console.log("EVT", evt);
+              // console.log("TARGET", node.data().position());
+              // console.log("TARGET TYPE", typeof node[0]);
+              // console.log("TARGET URL", node.data().url);
               // chrome.tabs.create({ url: node.data().url });
             });
           }}

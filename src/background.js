@@ -11,10 +11,6 @@ chrome.history.onVisited.addListener((re) => {
   nodeIDs.push(re.id);
 
   if (nodeIDs.length !== 1) {
-    // links.push({
-    //   data: { target: re.id, source: nodeIDs[nodeIDs.length - 2] },
-    // });
-
     const alreadyParent =
       family.some(({ data: { parent } }) => re.id === parent) &&
       links.length != 1;
@@ -47,14 +43,6 @@ chrome.history.onVisited.addListener((re) => {
       });
     }
 
-    alreadyParent && console.log(`id ${re.id} is already parent`);
-    isChild2Child && console.log(`id ${re.id} is child to child`);
-
-    console.log("is back", isBack);
-    console.log({ isBack });
-    console.log({ data: { isBack } });
-    console.log("background links", links);
-
     if (
       nodeIDs.length >= 3 &&
       nodeIDs[nodeIDs.length - 1] === nodeIDs[nodeIDs.length - 3]
@@ -66,11 +54,11 @@ chrome.history.onVisited.addListener((re) => {
       links[links.length - 1].data.back = false;
     }
 
-    chrome.runtime.sendMessage("ready-post-data", (response) => {});
+    chrome.runtime.sendMessage("ready-post-data", (response) => {
+      return true;
+    });
   }
 });
-
-chrome.history.onVisitRemoved.addListener((item) => {});
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === "get-data") {
