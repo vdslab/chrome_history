@@ -121,6 +121,28 @@ export default function HistoryChart({ nodes, links, family }) {
     }
 
     const layout = defaultLayout;
+    const stopEvent = () => {
+      console.log("stop");
+      cy.nodes().positions((node, i) => {
+        node.ungrabify();
+
+        if (node.data("type") == "ghost") {
+          const ghostTarget = node.data("id").split("-")[1];
+
+          return {
+            x: cy.$id(ghostTarget).position("x"),
+            y: cy.$id(ghostTarget).position("y"),
+          };
+        }
+
+        return {
+          x: node.position("x"),
+          y: node.position("y"),
+        };
+      });
+    };
+
+    layout.stop = stopEvent;
 
     if (family.length === 0) {
       console.log("family null");
@@ -192,28 +214,6 @@ export default function HistoryChart({ nodes, links, family }) {
     bodyNodes.forEach((node) => {
       cy.$id(`ghost-${node.data().id}`).position("x", node.position("x"));
     });
-
-    const stopEvent = () => {
-      cy.nodes().positions((node, i) => {
-        node.ungrabify();
-
-        if (node.data("type") == "ghost") {
-          const ghostTarget = node.data("id").split("-")[1];
-
-          return {
-            x: cy.$id(ghostTarget).position("x"),
-            y: cy.$id(ghostTarget).position("y"),
-          };
-        }
-
-        return {
-          x: node.position("x"),
-          y: node.position("y"),
-        };
-      });
-    };
-
-    layout.stop = stopEvent;
 
     cy.layout(layout).run();
   }, [graphData]);
