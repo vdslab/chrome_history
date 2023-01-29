@@ -27,15 +27,11 @@ export default function HistoryPage() {
       startTime: limitTime,
     };
 
-    console.log(limitTime);
-
     getHistorys(options).then((historys) => {
       setHistory(historys);
       historys.forEach((history) => {
-        console.log("id", history.id, "url", history.url);
         getVisits({ url: history.url }).then((visit) => {
           visits.push(visit);
-          // console.log(visit);
           setVisits([...visits]);
         });
       });
@@ -49,13 +45,6 @@ export default function HistoryPage() {
       return true;
     });
   }, []);
-
-  // if (history.length !== 0) {
-  //   console.log(history);
-  // }
-  if (visits.length !== 0) {
-    console.log("visits", visits);
-  }
 
   const node = visits.map((value) => {
     return { id: value[0].id, index: 0 };
@@ -107,15 +96,10 @@ export default function HistoryPage() {
     .filter((element) => element.length)
     .flat();
 
-  // console.log("ノード", node);
-  console.log("リヴァー氏", reverseFamily);
-  console.log("リンク", edges);
-
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message === "ready-post-data") {
       sendResponse("ok");
       chrome.runtime.sendMessage("get-data", (response) => {
-        // console.log("received data", response);
         const { nodes, links, family } = response;
         setNodes(nodes);
         setLinks(links);
@@ -125,22 +109,11 @@ export default function HistoryPage() {
       sendResponse("not get");
     }
     var referrer = document.referrer;
-    // console.log("ref", referrer);
   });
 
   return (
     <div>
-      <h1>My new React App</h1>
       <HistoryChart {...{ nodes, links, family }} />
-      <button
-        onClick={() => {
-          chrome.tabs.create({
-            url: "history-page.html",
-          });
-        }}
-      >
-        click me
-      </button>
     </div>
   );
 }
