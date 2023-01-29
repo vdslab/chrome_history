@@ -40,7 +40,7 @@ export default function HistoryPage() {
         });
       });
     });
-    
+
     chrome.runtime.sendMessage("get-data", (response) => {
       const { nodes, links } = response;
       setNodes(nodes);
@@ -97,7 +97,7 @@ export default function HistoryPage() {
     };
   });
 
-  const links = reverseFamily
+  const edges = reverseFamily
     .map((value) => {
       const data = value;
       return value.source.map((element, index) => {
@@ -109,9 +109,7 @@ export default function HistoryPage() {
 
   // console.log("ノード", node);
   console.log("リヴァー氏", reverseFamily);
-  console.log("リンク", links);
-
-
+  console.log("リンク", edges);
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message === "ready-post-data") {
