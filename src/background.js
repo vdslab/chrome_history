@@ -11,16 +11,33 @@ chrome.history.onVisited.addListener((re) => {
   nodeIDs.push(re.id);
 
   if (nodeIDs.length !== 1) {
+    const alreadyParent =
+      family.some(({ data: { parent } }) => re.id === parent) &&
+      links.length != 1;
+
+    const isChild2Child = family.some(({ data: { children } }) => {
+      return children.some((id) => id === re.id);
+    });
+
+    const isBack = alreadyParent || isChild2Child;
+
     links.push({
-      data: { target: re.id, source: nodeIDs[nodeIDs.length - 2] },
+      data: {
+        target: re.id,
+        source: nodeIDs[nodeIDs.length - 2],
+        isBack,
+      },
     });
 
     const foundindex = family.findIndex(
       (element) => element.data.parent === nodeIDs[nodeIDs.length - 2]
     );
     if (foundindex !== -1) {
-      family[foundindex].data.children.push(re.id);
-    } else {
+      const newChild = [
+        ...new Set([...family[foundindex].data.children, re.id]),
+      ];
+      family[foundindex].data.children = newChild;
+    } else if (!alreadyParent) {
       family.push({
         data: { children: [re.id], parent: nodeIDs[nodeIDs.length - 2] },
       });
@@ -37,11 +54,11 @@ chrome.history.onVisited.addListener((re) => {
       links[links.length - 1].data.back = false;
     }
 
-    chrome.runtime.sendMessage("ready-post-data", (response) => {});
+    chrome.runtime.sendMessage("ready-post-data", (response) => {
+      return true;
+    });
   }
 });
-
-chrome.history.onVisitRemoved.addListener((item) => {});
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === "get-data") {
