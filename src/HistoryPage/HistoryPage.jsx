@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HistoryChart from "../HistoryChart";
 import getVisitsArray from "./getHistory";
+import HotHistoryChart from "./HotHistoryChart";
 
 export default function HistoryPage() {
   const [history, setHistory] = useState([]);
@@ -96,7 +97,8 @@ export default function HistoryPage() {
 
   return (
     <div>
-      <HistoryChart {...{ nodes, links, family }} />
+      {/* <HistoryChart {...{ nodes, links, family }} /> */}
+      <HotHistoryChart />
     </div>
   );
 }
