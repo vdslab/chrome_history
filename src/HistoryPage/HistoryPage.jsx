@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
-import HistoryChart from "../HistoryChart";
 import getVisitsArray from "./getHistory";
+import HotHistoryChart from "./HotHistoryChart";
 
 export default function HistoryPage() {
   const [history, setHistory] = useState([]);
   const [visits, setVisits] = useState([]);
-
-  const [nodes, setNodes] = useState([]);
-  const [links, setLinks] = useState([]);
-  const [family, setFamily] = useState([]);
 
   useEffect(() => {
     const limitTime = new Date().getTime() - 60 * 60 * 1000;
@@ -19,14 +15,6 @@ export default function HistoryPage() {
     };
 
     setVisits(getVisitsArray(options));
-
-    chrome.runtime.sendMessage("get-data", (response) => {
-      const { nodes, links } = response;
-      setNodes(nodes);
-      setLinks(links);
-      setFamily(family);
-      return true;
-    });
   }, []);
 
   const node = visits.map((value) => {
@@ -78,25 +66,11 @@ export default function HistoryPage() {
     })
     .filter((element) => element.length)
     .flat();
-
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message === "ready-post-data") {
-      sendResponse("ok");
-      chrome.runtime.sendMessage("get-data", (response) => {
-        const { nodes, links, family } = response;
-        setNodes(nodes);
-        setLinks(links);
-        setFamily(family);
-      });
-    } else {
-      sendResponse("not get");
-    }
-    var referrer = document.referrer;
-  });
+  // var referrer = document.referrer;
 
   return (
     <div>
-      <HistoryChart {...{ nodes, links, family }} />
+      <HotHistoryChart />
     </div>
   );
 }
