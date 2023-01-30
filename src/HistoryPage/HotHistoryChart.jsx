@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HistoryChart from "../HistoryChart";
 
-export default function HistoryPage() {
+export default function HotHistoryChart() {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [family, setFamily] = useState([]);
