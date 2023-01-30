@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import HistoryChart from "./HistoryChart";
+import React, { useEffect, useState } from "react";
+import HistoryChart from "../HistoryChart";
 
-const App = () => {
+export default function HotHistoryChart() {
   const [nodes, setNodes] = useState([]);
   const [links, setLinks] = useState([]);
   const [family, setFamily] = useState([]);
 
   useEffect(() => {
     chrome.runtime.sendMessage("get-data", (response) => {
-      const { nodes, links, family } = response;
+      const { nodes, links } = response;
       setNodes(nodes);
       setLinks(links);
       setFamily(family);
@@ -28,24 +28,11 @@ const App = () => {
     } else {
       sendResponse("not get");
     }
-    // var referrer = document.referrer;
   });
 
   return (
     <div>
-      <h1>My new React App</h1>
       <HistoryChart {...{ nodes, links, family }} />
-      <button
-        onClick={() => {
-          chrome.tabs.create({
-            url: "history-page.html",
-          });
-        }}
-      >
-        click me
-      </button>
     </div>
   );
-};
-
-export default App;
+}
