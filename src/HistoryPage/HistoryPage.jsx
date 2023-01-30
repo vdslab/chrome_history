@@ -94,8 +94,10 @@ export default function HistoryPage() {
     .filter((element) => element.length)
     .flat();
 
+  const family = links.map;
+
   // console.log("ノード", node);
-  console.log("リヴァー氏", reverseFamily);
+  console.log("リヴァい", reverseFamily);
   console.log("リンク", links);
 
   return (
