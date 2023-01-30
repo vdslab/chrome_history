@@ -37,7 +37,10 @@ export default function VisitsHistoryChart() {
         return [key, item];
       })
     ).values()
-  );
+  ).sort((l, r) => {
+    return l.visitTime - r.visitTime;
+  });
+  //   console.log(uniqueVisits);
   const linkVisits = uniqueVisits.filter((item) => item.transition === "link");
   //   console.log("linkVisits", linkVisits);
 
@@ -155,6 +158,20 @@ export default function VisitsHistoryChart() {
   //     .filter((element) => element.length)
   //     .flat();
   // var referrer = document.referrer;
+
+  console.log("links", links);
+  const family = [];
+  links.forEach(({ data: { target, source } }) => {
+    const fidx = family.findIndex(({ parent }) => parent === source);
+    console.log(family, target, source);
+    console.log(fidx);
+    if (fidx < 0) {
+      family.push({ parent: source, children: [target] });
+    }
+
+    family[fidx].children.push(target);
+  });
+  console.log(family);
 
   return (
     <div>
