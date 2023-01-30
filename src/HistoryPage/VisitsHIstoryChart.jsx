@@ -14,10 +14,8 @@ export default function VisitsHistoryChart() {
       startTime: limitTime,
     };
 
-    // console.log(getVisitsArray(options));
     (async () => {
       getVisitsArray(options).then(({ visits, historys }) => {
-        console.log(visits);
         setVisits(visits);
         setHistory(historys);
       });
@@ -97,11 +95,6 @@ export default function VisitsHistoryChart() {
     .filter((element) => element.length)
     .flat();
   // var referrer = document.referrer;
-
-  //   console.log("reverse family", reverseFamily);
-  //   console.log("node", node);
-  //   console.log("edges", edges);
-  //   console.log("visits", visits);
 
   return (
     <div>
