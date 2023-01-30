@@ -105,7 +105,7 @@ export default function HistoryChart({ nodes, links, family }) {
 
     layout.stop = stopEvent;
 
-    if (family.length === 0) {
+    if (!family || family.length === 0) {
       console.log("family null");
       cy.layout(layout).run();
       return;
