@@ -8,6 +8,7 @@ cytoscape.use(cola);
 
 export default function HistoryChart({ nodes, links, family }) {
   const cyRef = useRef(null);
+  console.log("history chart");
 
   const { graphData } = useMemo(() => {
     if (nodes.length === 0 || links.length === 0) {
@@ -37,6 +38,7 @@ export default function HistoryChart({ nodes, links, family }) {
 
     const nodedata = nodeBodyData.concat(nodeGhostData);
 
+    console.log(links);
     const linkdata = links.map(({ data }) => {
       if (data.isBack) {
         return {
@@ -55,6 +57,7 @@ export default function HistoryChart({ nodes, links, family }) {
         },
       };
     });
+    console.log("link", linkdata);
 
     // objectの重複をなくす
     const edges = Array.from(
@@ -105,7 +108,7 @@ export default function HistoryChart({ nodes, links, family }) {
 
     layout.stop = stopEvent;
 
-    if (family.length === 0) {
+    if (!family || family.length === 0) {
       console.log("family null");
       cy.layout(layout).run();
       return;

@@ -1,23 +1,47 @@
 import React, { useEffect, useState } from "react";
 import getVisitsArray from "./getHistory";
+import HistoryChart from "../HistoryChart";
 
 export default function VisitsHistoryChart() {
   const [history, setHistory] = useState([]);
   const [visits, setVisits] = useState([]);
 
   useEffect(() => {
-    const limitTime = new Date().getTime() - 60 * 60 * 1000;
+    const limitTime = new Date().getTime() - 24 * 60 * 60 * 1000;
     const options = {
       text: "",
       maxResults: 100,
       startTime: limitTime,
     };
 
-    setVisits(getVisitsArray(options));
+    // console.log(getVisitsArray(options));
+    (async () => {
+      getVisitsArray(options).then(({ visits, historys }) => {
+        console.log(visits);
+        setVisits(visits);
+        setHistory(historys);
+      });
+    })();
   }, []);
 
+  if (visits.length == 0) {
+    return (
+      <div>
+        <p>visits unload</p>
+      </div>
+    );
+  }
+
   const node = visits.map((value) => {
-    return { id: value[0].id, index: 0 };
+    const historyItem = history.find((h) => h.id === value[0].id);
+    return {
+      data: {
+        id: value[0].id,
+        index: 0,
+        title: historyItem.title,
+        url: historyItem.url,
+      },
+    };
   });
 
   const findsource = (referringId) => {
@@ -60,16 +84,31 @@ export default function VisitsHistoryChart() {
     .map((value) => {
       const data = value;
       return value.source.map((element, index) => {
-        return { taeget: data.target, source: element, time: data.time[index] };
+        return {
+          data: {
+            target: data.target,
+            source: element,
+            time: data.time[index],
+            isBack: true,
+          },
+        };
       });
     })
     .filter((element) => element.length)
     .flat();
   // var referrer = document.referrer;
 
+  //   console.log("reverse family", reverseFamily);
+  //   console.log("node", node);
+  //   console.log("edges", edges);
+  //   console.log("visits", visits);
+
   return (
     <div>
       <p>visits chart</p>
+      <div>
+        <HistoryChart {...{ nodes: node, links: edges }} />
+      </div>
     </div>
   );
 }
