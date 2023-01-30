@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import HistoryChart from "../HistoryChart";
-
-async function getHistorys(options) {
-  const history = await chrome.history.search(options);
-  return history;
-}
-
-async function getVisits(options) {
-  const visits = await chrome.history.getVisits(options);
-  return visits;
-}
+import getVisitsArray from "./getHistory";
 
 export default function HistoryPage() {
   const [history, setHistory] = useState([]);
@@ -27,15 +18,7 @@ export default function HistoryPage() {
       startTime: limitTime,
     };
 
-    getHistorys(options).then((historys) => {
-      setHistory(historys);
-      historys.forEach((history) => {
-        getVisits({ url: history.url }).then((visit) => {
-          visits.push(visit);
-          setVisits([...visits]);
-        });
-      });
-    });
+    setVisits(getVisitsArray(options));
 
     chrome.runtime.sendMessage("get-data", (response) => {
       const { nodes, links } = response;
