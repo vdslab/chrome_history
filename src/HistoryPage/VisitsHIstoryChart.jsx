@@ -30,17 +30,77 @@ export default function VisitsHistoryChart() {
     );
   }
 
-  const node = visits.map((value) => {
-    const historyItem = history.find((h) => h.id === value[0].id);
+  const uniqueVisits = Array.from(
+    new Map(
+      visits.flat().map((item) => {
+        const key = item.id + item.referringVisitId;
+        return [key, item];
+      })
+    ).values()
+  );
+  const linkVisits = uniqueVisits.filter((item) => item.transition === "link");
+  //   console.log("linkVisits", linkVisits);
+
+  const uniqueIdVisits = Array.from(
+    new Map(
+      linkVisits.map((item) => {
+        const key = item.id;
+        return [key, item];
+      })
+    ).values()
+  );
+
+  const nodes = uniqueIdVisits.map((visit) => {
+    const hist = history.find((h) => h.id === visit.id);
     return {
       data: {
-        id: value[0].id,
-        index: 0,
-        title: historyItem.title,
-        url: historyItem.url,
+        id: visit.id,
+        title: hist.title,
+        url: hist.url,
       },
     };
   });
+  //   console.log("nodes", nodes);
+
+  const raw_links = linkVisits
+    .map((visit) => {
+      const source = linkVisits.find((from) => {
+        return visit.referringVisitId === from.visitId;
+      });
+      if (!source) {
+        return;
+      }
+
+      return {
+        data: {
+          target: visit.id,
+          source: source.id,
+        },
+      };
+    })
+    .filter((item) => item);
+  const links = Array.from(
+    new Map(
+      raw_links.map((item) => {
+        const key = item.data.target + item.data.source;
+        return [key, item];
+      })
+    ).values()
+  );
+  //   console.log("raw_links", raw_links);
+  //   console.log("links", links);
+
+  //   const node = visits.map((value) => {
+  //     const historyItem = history.find((h) => h.id === value[0].id);
+  //     return {
+  //       data: {
+  //         id: value[0].id,
+  //         index: 0,
+  //         title: historyItem.title,
+  //         url: historyItem.url,
+  //       },
+  //     };
+  //   });
 
   const findsource = (referringId) => {
     if (referringId === 0) {
@@ -78,29 +138,30 @@ export default function VisitsHistoryChart() {
     };
   });
 
-  const edges = reverseFamily
-    .map((value) => {
-      const data = value;
-      return value.source.map((element, index) => {
-        return {
-          data: {
-            target: data.target,
-            source: element,
-            time: data.time[index],
-            isBack: true,
-          },
-        };
-      });
-    })
-    .filter((element) => element.length)
-    .flat();
+  //   const edges = reverseFamily
+  //     .map((value) => {
+  //       const data = value;
+  //       return value.source.map((element, index) => {
+  //         return {
+  //           data: {
+  //             target: data.target,
+  //             source: element,
+  //             time: data.time[index],
+  //             isBack: true,
+  //           },
+  //         };
+  //       });
+  //     })
+  //     .filter((element) => element.length)
+  //     .flat();
   // var referrer = document.referrer;
 
   return (
     <div>
       <p>visits chart</p>
       <div>
-        <HistoryChart {...{ nodes: node, links: edges }} />
+        {/* <HistoryChart {...{ nodes: node, links: edges }} /> */}
+        <HistoryChart {...{ nodes, links }} />
       </div>
     </div>
   );
