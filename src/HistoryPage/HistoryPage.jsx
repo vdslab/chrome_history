@@ -62,53 +62,99 @@ function HotHistory() {
 function Form(props) {
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(event);
     const date = event.target[0];
     const time = event.target[1];
-    console.log(date.value, time.value);
     props.onFormSubmit({ d: date.value, t: time.value });
   }
 
+  const [dropdown, setDropdown] = "no-active";
+
   return (
-    <div className="section">
-      <div className="container">
-        <form className="box" onSubmit={handleSubmit}>
-          <div className="field">
+    <form onSubmit={handleSubmit}>
+      <div className="section">
+        <div className="select">
+          <select defaultValue="全期間">
+            <option>全期間</option>
+            <option>今日</option>
+            <option>昨日</option>
+            <option>過去7日間</option>
+            <option>過去30日間</option>
+            <option>カスタム</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="section">
+        <div className="field is-grouped is-grouped-multiline">
+          <p className="control">
             <label className="label">日にち</label>
-            <div className="control">
-              <input className="input" type="number" defaultValue="0" />
-            </div>
+            <input className="input" type="date" defaultValue="0" />
+          </p>
+          <p className="control">
+            <label className="label">日にち</label>
+            <input className="input" type="date" defaultValue="1" />
+          </p>
+        </div>
+      </div>
+
+      <button className="button is-primary" type="submit" value="submit">
+        適用
+      </button>
+    </form>
+  );
+}
+
+function FormModal({ show, setShow }) {
+  const [date, setDate] = useState(0);
+  const [time, setTime] = useState(1);
+  function reloadDate(props) {
+    setDate(props.d);
+    setTime(props.t);
+  }
+
+  function closeModal() {
+    setShow("modal");
+  }
+
+  return (
+    <div className={show}>
+      <div className="modal-background"></div>
+      <div className="modal-card">
+        <header className="modal-card-head">
+          <div className="container">
+            <p className="modal-card-title">日付でフィルタリング</p>
           </div>
-          <div className="field">
-            <label className="label">時間</label>
-            <div className="control">
-              <input className="input" type="number" defaultValue="1" />
-            </div>
+          <button className="delete" onClick={closeModal}></button>
+        </header>
+        <section className="modal-card-body">
+          <div className="content">
+            <Form onFormSubmit={reloadDate} />
           </div>
-          <button className="button is-primary" type="submit" value="submit">
-            GO
-          </button>
-        </form>
+        </section>
       </div>
     </div>
   );
 }
 
 function VisitsHistory() {
-  const [date, setDate] = useState(0);
-  const [time, setTime] = useState(1);
-  function reloadDate(props) {
-    setDate(props.d);
-    setTime(props.t);
-    console.log("222", props.t);
-  }
+  const [show, setShow] = useState("modal");
+  const openModal = () => {
+    setShow("modal is-active");
+  };
+
   return (
     <div>
-      <Form onFormSubmit={reloadDate} />
+      <div className="container">
+        <button className="button" onClick={openModal}>
+          日付でフィルタリング
+        </button>
+        <FormModal show={show} setShow={setShow} />
+      </div>
+
       <div className="section">
         <div className="container">
           <div className="box">
-            <VisitsHistoryChart />
+            <VisitsHistoryChart {...{}} />
           </div>
         </div>
       </div>
