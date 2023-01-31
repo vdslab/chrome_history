@@ -3,6 +3,7 @@ import HotHistoryChart from "./HotHistoryChart";
 import VisitsHistoryChart from "./VisitsHIstoryChart";
 import "bulma/css/bulma.css";
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
+import { ErrorBoundary } from "./ErrorBound";
 
 function Header() {
   return (
@@ -52,7 +53,9 @@ function HotHistory() {
     <div className="section">
       <div className="container">
         <div className="box">
-          <HotHistoryChart />
+          <ErrorBoundary>
+            <HotHistoryChart />
+          </ErrorBoundary>
         </div>
       </div>
     </div>
@@ -154,8 +157,10 @@ function VisitsHistory() {
       <div className="section">
         <div className="container">
           <div className="box">
+            <ErrorBoundary>
             <VisitsHistoryChart {...{}} />
           </div>
+          </ErrorBoundary>
         </div>
       </div>
     </div>

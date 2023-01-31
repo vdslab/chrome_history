@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import cytoscape from "cytoscape";
 import CytoscapeComponent from "react-cytoscapejs";
 import cola from "cytoscape-cola";
-import { defaultLayout, styleSheet } from "./chartGlobalConst";
+import { defaultLayout, styleSheet } from "../chartGlobalConst";
 
 cytoscape.use(cola);
 
-export default function HistoryChart({ nodes, links, family }) {
+export default function VisitsChart({ nodes, links, family }) {
   const cyRef = useRef(null);
 
   const { graphData } = useMemo(() => {
-    if (!nodes || !links || nodes.length === 0 || links.length === 0) {
+    if (nodes.length === 0 || links.length === 0) {
       return { graphData: null };
     }
 
@@ -75,10 +75,6 @@ export default function HistoryChart({ nodes, links, family }) {
   }, [nodes, links]);
 
   useEffect(() => {
-    if (!graphData) {
-      return;
-    }
-
     const cy = cyRef.current;
     if (cy === null) {
       console.log("cy null");
@@ -198,32 +194,34 @@ export default function HistoryChart({ nodes, links, family }) {
   const layout = { ...defaultLayout };
 
   return (
-    <>
-      <CytoscapeComponent
-        elements={CytoscapeComponent.normalizeElements(graphData)}
-        // pan={{ x: 200, y: 200 }}
-        style={{ width: graphWidth, height: graphHeight }}
-        zoomingEnabled={true}
-        maxZoom={1.5}
-        minZoom={0.3}
-        autounselectify={false}
-        boxSelectionEnabled={true}
-        layout={layout}
-        stylesheet={styleSheet}
-        cy={(cy) => {
-          // console.log("EVT", cy);
-          cyRef.current = cy;
+    <div>
+      <div>
+        <CytoscapeComponent
+          elements={CytoscapeComponent.normalizeElements(graphData)}
+          // pan={{ x: 200, y: 200 }}
+          style={{ width: graphWidth, height: graphHeight }}
+          zoomingEnabled={true}
+          maxZoom={1.5}
+          minZoom={0.3}
+          autounselectify={false}
+          boxSelectionEnabled={true}
+          layout={layout}
+          stylesheet={styleSheet}
+          cy={(cy) => {
+            // console.log("EVT", cy);
+            cyRef.current = cy;
 
-          // cy.on("tap", "node", (evt) => {
-          // var node = evt.target;
-          // console.log("EVT", evt);
-          // console.log("TARGET", node.data().position());
-          // console.log("TARGET TYPE", typeof node[0]);
-          // console.log("TARGET URL", node.data().url);
-          // chrome.tabs.create({ url: node.data().url });
-          // });
-        }}
-      />
-    </>
+            // cy.on("tap", "node", (evt) => {
+            // var node = evt.target;
+            // console.log("EVT", evt);
+            // console.log("TARGET", node.data().position());
+            // console.log("TARGET TYPE", typeof node[0]);
+            // console.log("TARGET URL", node.data().url);
+            // chrome.tabs.create({ url: node.data().url });
+            // });
+          }}
+        />
+      </div>
+    </div>
   );
 }

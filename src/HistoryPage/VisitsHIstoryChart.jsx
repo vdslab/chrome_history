@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import getVisitsArray from "./getHistory";
-import HistoryChart from "../HistoryChart";
+import VisitsChart from "./VisitsChart";
+import { ErrorBoundary } from "./ErrorBound";
 
 export default function VisitsHistoryChart() {
   const [history, setHistory] = useState([]);
@@ -25,11 +26,10 @@ export default function VisitsHistoryChart() {
   if (visits.length == 0) {
     return (
       <div>
-        <p>visits unload</p>
+        <p>getting your visits...</p>
       </div>
     );
   }
-  console.log("visits", visits);
 
   const uniqueVisits = Array.from(
     new Map(
@@ -41,9 +41,7 @@ export default function VisitsHistoryChart() {
   ).sort((l, r) => {
     return l.visitTime - r.visitTime;
   });
-  //   console.log(uniqueVisits);
   const linkVisits = uniqueVisits.filter((item) => item.transition === "link");
-  //   console.log("linkVisits", linkVisits);
 
   const uniqueIdVisits = Array.from(
     new Map(
@@ -64,7 +62,6 @@ export default function VisitsHistoryChart() {
       },
     };
   });
-  //   console.log("nodes", nodes);
 
   const raw_links = linkVisits
     .map((visit) => {
@@ -159,7 +156,6 @@ export default function VisitsHistoryChart() {
     ).values()
   );
 
-  console.log("uniqueRawLinks", uniqueRawLinks);
   const raw_family = [];
   const links = [];
   uniqueRawLinks.forEach(({ data: { target, source } }) => {
@@ -200,16 +196,12 @@ export default function VisitsHistoryChart() {
     const newChild = [...new Set([...family[fidx].data.children, target])];
     raw_family[fidx].data.children = newChild;
   });
-  console.log("raw_family", raw_family);
-  console.log("links", links);
 
   return (
-    <div>
-      <p>visits chart</p>
-      <div>
-        {/* <HistoryChart {...{ nodes: node, links: edges }} /> */}
-        <HistoryChart {...{ nodes, links, family: raw_family }} />
-      </div>
-    </div>
+    <>
+      <ErrorBoundary>
+        <VisitsChart {...{ nodes, links, family: raw_family }} />
+      </ErrorBoundary>
+    </>
   );
 }
