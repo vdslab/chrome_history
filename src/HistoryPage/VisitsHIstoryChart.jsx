@@ -29,6 +29,7 @@ export default function VisitsHistoryChart() {
       </div>
     );
   }
+  console.log("visits", visits);
 
   const uniqueVisits = Array.from(
     new Map(
@@ -37,7 +38,10 @@ export default function VisitsHistoryChart() {
         return [key, item];
       })
     ).values()
-  );
+  ).sort((l, r) => {
+    return l.visitTime - r.visitTime;
+  });
+  //   console.log(uniqueVisits);
   const linkVisits = uniqueVisits.filter((item) => item.transition === "link");
   //   console.log("linkVisits", linkVisits);
 
@@ -79,16 +83,6 @@ export default function VisitsHistoryChart() {
       };
     })
     .filter((item) => item);
-  const links = Array.from(
-    new Map(
-      raw_links.map((item) => {
-        const key = item.data.target + item.data.source;
-        return [key, item];
-      })
-    ).values()
-  );
-  //   console.log("raw_links", raw_links);
-  //   console.log("links", links);
 
   //   const node = visits.map((value) => {
   //     const historyItem = history.find((h) => h.id === value[0].id);
@@ -156,12 +150,65 @@ export default function VisitsHistoryChart() {
   //     .flat();
   // var referrer = document.referrer;
 
+  const uniqueRawLinks = Array.from(
+    new Map(
+      raw_links.map((item) => {
+        const key = item.data.target + item.data.source;
+        return [key, item];
+      })
+    ).values()
+  );
+
+  console.log("uniqueRawLinks", uniqueRawLinks);
+  const raw_family = [];
+  const links = [];
+  uniqueRawLinks.forEach(({ data: { target, source } }) => {
+    // link
+    const alreadyParent =
+      raw_family.some(({ data: { parent } }) => target === parent) &&
+      links.length != 1;
+
+    const isChild2Child = raw_family.some(({ data: { children } }) => {
+      return children.some((id) => id === target);
+    });
+
+    const isBack = alreadyParent || isChild2Child;
+    links.push({
+      data: {
+        target,
+        source,
+        isBack,
+      },
+    });
+    // family
+    const fidx = raw_family.findIndex(({ parent }) => parent === source);
+
+    if (fidx < 0) {
+      if (alreadyParent) {
+        return;
+      }
+
+      raw_family.push({
+        data: {
+          parent: source,
+          children: [target],
+        },
+      });
+      return;
+    }
+
+    const newChild = [...new Set([...family[fidx].data.children, target])];
+    raw_family[fidx].data.children = newChild;
+  });
+  console.log("raw_family", raw_family);
+  console.log("links", links);
+
   return (
     <div>
       <p>visits chart</p>
       <div>
         {/* <HistoryChart {...{ nodes: node, links: edges }} /> */}
-        <HistoryChart {...{ nodes, links }} />
+        <HistoryChart {...{ nodes, links, family: raw_family }} />
       </div>
     </div>
   );
