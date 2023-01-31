@@ -7,8 +7,8 @@ export default function HistoryPage() {
 
   return (
     <div>
-      {/* <HotHistoryChart /> */}
-      <VisitsHistoryChart />
+      <HotHistoryChart />
+      {/* <VisitsHistoryChart /> */}
     </div>
   );
 }
