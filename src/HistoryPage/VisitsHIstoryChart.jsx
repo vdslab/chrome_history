@@ -161,10 +161,33 @@ export default function VisitsHistoryChart() {
 
   console.log("uniqueRawLinks", uniqueRawLinks);
   const raw_family = [];
+  const links = [];
   uniqueRawLinks.forEach(({ data: { target, source } }) => {
+    // link
+    const alreadyParent =
+      raw_family.some(({ data: { parent } }) => target === parent) &&
+      links.length != 1;
+
+    const isChild2Child = raw_family.some(({ data: { children } }) => {
+      return children.some((id) => id === target);
+    });
+
+    const isBack = alreadyParent || isChild2Child;
+    links.push({
+      data: {
+        target,
+        source,
+        isBack,
+      },
+    });
+    // family
     const fidx = raw_family.findIndex(({ parent }) => parent === source);
 
     if (fidx < 0) {
+      if (alreadyParent) {
+        return;
+      }
+
       raw_family.push({
         data: {
           parent: source,
@@ -174,18 +197,18 @@ export default function VisitsHistoryChart() {
       return;
     }
 
-    raw_family[fidx].children.push(target);
+    const newChild = [...new Set([...family[fidx].data.children, target])];
+    raw_family[fidx].data.children = newChild;
   });
   console.log("raw_family", raw_family);
+  console.log("links", links);
 
   return (
     <div>
       <p>visits chart</p>
       <div>
         {/* <HistoryChart {...{ nodes: node, links: edges }} /> */}
-        <HistoryChart
-          {...{ nodes, links: uniqueRawLinks, family: raw_family }}
-        />
+        <HistoryChart {...{ nodes, links, family: raw_family }} />
       </div>
     </div>
   );
