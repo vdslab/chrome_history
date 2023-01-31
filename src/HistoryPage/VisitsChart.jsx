@@ -81,7 +81,7 @@ export default function VisitsChart({ nodes, links, family }) {
       return;
     }
 
-    const layout = defaultLayout;
+    const layout = { ...defaultLayout };
     const stopEvent = () => {
       console.log("stop");
       cy.nodes().positions((node, i) => {
@@ -182,7 +182,7 @@ export default function VisitsChart({ nodes, links, family }) {
   if (graphData === null) {
     return (
       <div>
-        <p>loading</p>
+        <p>no data</p>
       </div>
     );
   }
@@ -191,7 +191,7 @@ export default function VisitsChart({ nodes, links, family }) {
   const height = "600px";
   const graphWidth = "100%";
   const graphHeight = "70vh";
-  const layout = defaultLayout;
+  const layout = { ...defaultLayout };
 
   return (
     <div>

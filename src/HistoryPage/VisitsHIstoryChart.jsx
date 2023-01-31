@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import getVisitsArray from "./getHistory";
 import VisitsChart from "./VisitsChart";
+import { ErrorBoundary } from "./ErrorBound";
 
 export default function VisitsHistoryChart() {
   const [history, setHistory] = useState([]);
@@ -25,7 +26,7 @@ export default function VisitsHistoryChart() {
   if (visits.length == 0) {
     return (
       <div>
-        <p>visits unload</p>
+        <p>getting your visits...</p>
       </div>
     );
   }
@@ -197,12 +198,10 @@ export default function VisitsHistoryChart() {
   });
 
   return (
-    <div>
-      <p>visits chart</p>
-      <div>
-        {/* <HistoryChart {...{ nodes: node, links: edges }} /> */}
+    <>
+      <ErrorBoundary>
         <VisitsChart {...{ nodes, links, family: raw_family }} />
-      </div>
-    </div>
+      </ErrorBoundary>
+    </>
   );
 }

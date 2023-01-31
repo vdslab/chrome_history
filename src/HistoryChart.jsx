@@ -11,8 +11,9 @@ export default function HistoryChart({ nodes, links, family }) {
 
   const { graphData } = useMemo(() => {
     if (!nodes || !links || nodes.length === 0 || links.length === 0) {
-      return { graphData: null, error: "" };
+      return { graphData: null };
     }
+
 
     const nodeBodyData = nodes.map(({ data }) => {
       return {
@@ -75,13 +76,17 @@ export default function HistoryChart({ nodes, links, family }) {
   }, [nodes, links]);
 
   useEffect(() => {
+    if (!graphData) {
+      return;
+    }
+
     const cy = cyRef.current;
     if (cy === null) {
       console.log("cy null");
       return;
     }
 
-    const layout = defaultLayout;
+    const layout = { ...defaultLayout };
     const stopEvent = () => {
       console.log("stop");
       cy.nodes().positions((node, i) => {
@@ -182,7 +187,7 @@ export default function HistoryChart({ nodes, links, family }) {
   if (graphData === null) {
     return (
       <div>
-        <p>loading</p>
+        <p>no data</p>
       </div>
     );
   }
@@ -191,38 +196,35 @@ export default function HistoryChart({ nodes, links, family }) {
   const height = "600px";
   const graphWidth = "100%";
   const graphHeight = "70vh";
-  const layout = defaultLayout;
+  const layout = { ...defaultLayout };
 
   return (
-    <div>
-      <div>
-        <CytoscapeComponent
-          elements={CytoscapeComponent.normalizeElements(graphData)}
-          // pan={{ x: 200, y: 200 }}
-          style={{ width: graphWidth, height: graphHeight }}
-          zoomingEnabled={true}
-          maxZoom={1.5}
-          minZoom={0.3}
-          wheelSensitivity={0.05}
-          autounselectify={false}
-          boxSelectionEnabled={true}
-          layout={layout}
-          stylesheet={styleSheet}
-          cy={(cy) => {
-            console.log("EVT", cy);
-            cyRef.current = cy;
+    <>
+      <CytoscapeComponent
+        elements={CytoscapeComponent.normalizeElements(graphData)}
+        // pan={{ x: 200, y: 200 }}
+        style={{ width: graphWidth, height: graphHeight }}
+        zoomingEnabled={true}
+        maxZoom={1.5}
+        minZoom={0.3}
+        autounselectify={false}
+        boxSelectionEnabled={true}
+        layout={layout}
+        stylesheet={styleSheet}
+        cy={(cy) => {
+          console.log("EVT", cy);
+          cyRef.current = cy;
 
-            cy.on("tap", "node", (evt) => {
-              // var node = evt.target;
-              // console.log("EVT", evt);
-              // console.log("TARGET", node.data().position());
-              // console.log("TARGET TYPE", typeof node[0]);
-              // console.log("TARGET URL", node.data().url);
-              // chrome.tabs.create({ url: node.data().url });
-            });
-          }}
-        />
-      </div>
-    </div>
+          // cy.on("tap", "node", (evt) => {
+          // var node = evt.target;
+          // console.log("EVT", evt);
+          // console.log("TARGET", node.data().position());
+          // console.log("TARGET TYPE", typeof node[0]);
+          // console.log("TARGET URL", node.data().url);
+          // chrome.tabs.create({ url: node.data().url });
+          // });
+        }}
+      />
+    </>
   );
 }
