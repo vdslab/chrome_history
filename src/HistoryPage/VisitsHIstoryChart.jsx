@@ -29,6 +29,7 @@ export default function VisitsHistoryChart() {
       </div>
     );
   }
+  console.log("visits", visits);
 
   const uniqueVisits = Array.from(
     new Map(
@@ -161,15 +162,14 @@ export default function VisitsHistoryChart() {
 
   console.log("links", links);
   const family = [];
-  links.forEach(({ data: { target, source } }) => {
-    const fidx = family.findIndex(({ parent }) => parent === source);
-    console.log(family, target, source);
-    console.log(fidx);
+  links.forEach((link) => {
+    const fidx = family.findIndex(({ parent }) => parent === link.data.source);
     if (fidx < 0) {
-      family.push({ parent: source, children: [target] });
+      family.push({ parent: link.data.source, children: [link.data.target] });
+      return;
     }
 
-    family[fidx].children.push(target);
+    family[fidx].children.push(link.data.target);
   });
   console.log(family);
 
