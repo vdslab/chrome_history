@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import getVisitsArray from "./getHistory";
 import HistoryChart from "../HistoryChart";
+import VisitsChart from "./VisitsChart";
 
 export default function VisitsHistoryChart() {
   const [history, setHistory] = useState([]);
@@ -208,7 +209,7 @@ export default function VisitsHistoryChart() {
       <p>visits chart</p>
       <div>
         {/* <HistoryChart {...{ nodes: node, links: edges }} /> */}
-        <HistoryChart {...{ nodes, links, family: raw_family }} />
+        <VisitsChart {...{ nodes, links, family: raw_family }} />
       </div>
     </div>
   );
