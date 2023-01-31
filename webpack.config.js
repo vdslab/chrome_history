@@ -6,7 +6,8 @@ module.exports = {
   entry: {
     background: path.join(__dirname, "src/background.js"),
     main: path.join(__dirname, "src/index.js"),
-    pages: path.join(__dirname, "src/HistoryPage/main-history.js")
+    pages: path.join(__dirname, "src/HistoryPage/main-history.js"),
+    popup: path.join(__dirname, "src/popup.js"),
   },
   output: {
     path: path.join(__dirname, "dist/js"),
@@ -20,6 +21,7 @@ module.exports = {
         use: "babel-loader",
         exclude: /node_modules/,
       },
+      { test: /\.css$/, use: ["style-loader", "css-loader"] },
     ],
   },
   resolve: {

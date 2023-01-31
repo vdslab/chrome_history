@@ -8,7 +8,7 @@ const App = () => {
 
   useEffect(() => {
     chrome.runtime.sendMessage("get-data", (response) => {
-      const { nodes, links } = response;
+      const { nodes, links, family } = response;
       setNodes(nodes);
       setLinks(links);
       setFamily(family);
@@ -20,7 +20,6 @@ const App = () => {
     if (message === "ready-post-data") {
       sendResponse("ok");
       chrome.runtime.sendMessage("get-data", (response) => {
-        // console.log("received data", response);
         const { nodes, links, family } = response;
         setNodes(nodes);
         setLinks(links);
@@ -29,8 +28,7 @@ const App = () => {
     } else {
       sendResponse("not get");
     }
-    var referrer = document.referrer;
-    // console.log("ref", referrer);
+    // var referrer = document.referrer;
   });
 
   return (
