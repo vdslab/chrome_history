@@ -158,9 +158,9 @@ function VisitsHistory() {
         <div className="container">
           <div className="box">
             <ErrorBoundary>
-            <VisitsHistoryChart {...{}} />
+              <VisitsHistoryChart {...{}} />
+            </ErrorBoundary>
           </div>
-          </ErrorBoundary>
         </div>
       </div>
     </div>
