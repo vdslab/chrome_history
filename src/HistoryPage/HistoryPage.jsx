@@ -2,7 +2,7 @@ import React from "react";
 import HotHistoryChart from "./HotHistoryChart";
 import VisitsHistoryChart from "./VisitsHIstoryChart";
 import "bulma/css/bulma.css";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { HashRouter, Routes, Route, Link } from "react-router-dom";
 
 function Header() {
   return (
@@ -18,7 +18,7 @@ function Header() {
 
 function Router() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <section className="section">
         <div className="container">
           <div className="columns">
@@ -36,17 +36,40 @@ function Router() {
             </div>
             <div className="column is-10">
               <Routes>
-                <Route path="HotHistory" element={<HotHistoryChart />}></Route>
-                <Route path="VisitsHistory" element={<VisitsHistoryChart />} />
+                <Route path="HotHistory" element={<HotHistory />}></Route>
+                <Route path="VisitsHistory" element={<VisitsHistory />} />
               </Routes>
             </div>
           </div>
         </div>
       </section>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
+function HotHistory() {
+  return (
+    <div className="section">
+      <div className="container">
+        <div className="box">
+          <HotHistoryChart />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VisitsHistory() {
+  return (
+    <div className="section">
+      <div className="container">
+        <div className="box">
+          <VisitsHistoryChart />
+        </div>
+      </div>
+    </div>
+  );
+}
 export default function HistoryPage() {
   // var referrer = document.referrer;
 
