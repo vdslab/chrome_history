@@ -3,15 +3,16 @@ import getVisitsArray from "./getHistory";
 import VisitsChart from "./VisitsChart";
 import { ErrorBoundary } from "./ErrorBound";
 
-export default function VisitsHistoryChart() {
+export default function VisitsHistoryChart({ filter }) {
   const [history, setHistory] = useState([]);
   const [visits, setVisits] = useState([]);
 
   useEffect(() => {
-    const limitTime = new Date().getTime() - 24 * 60 * 60 * 1000;
+    console.log("filter", filter);
+    const limitTime = new Date().getTime() - filter * 60 * 60 * 1000;
     const options = {
       text: "",
-      maxResults: 100,
+      maxResults: 10000,
       startTime: limitTime,
     };
 
