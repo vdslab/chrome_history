@@ -2,7 +2,7 @@ import React from "react";
 import HotHistoryChart from "./HotHistoryChart";
 import VisitsHistoryChart from "./VisitsHIstoryChart";
 import "bulma/css/bulma.css";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { HashRouter, Routes, Route, Link } from "react-router-dom";
 
 function Header() {
   return (
@@ -18,7 +18,7 @@ function Header() {
 
 function Router() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <section className="section">
         <div className="container">
           <div className="columns">
@@ -43,7 +43,7 @@ function Router() {
           </div>
         </div>
       </section>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
