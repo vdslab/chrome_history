@@ -67,3 +67,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse(`no responce: ${message}`);
   }
 });
+
+let lifeline;
+
+//5分間の再接続処理
+chrome.runtime.onConnect.addListener((port) => {
+  console.log("connect");
+  if (port.name === "keepAlive") {
+    lifeline = port;
+    setTimeout(keepAliveForced, 295e3); //4分55秒
+    port.onDisconnect.addListener(keepAliveForced);
+  }
+});
+
+function keepAliveForced() {
+  lifeline?.disconnect();
+  lifeline = null;
+  keepAlive();
+}
+
+async function keepAlive() {
+  if (lifeline) return;
+  chrome.runtime.connect({ name: "keepAlive" });
+}

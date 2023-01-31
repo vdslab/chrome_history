@@ -8,14 +8,15 @@ async function getVisits(options) {
   return visits;
 }
 
-export default function getVisitsArray(options) {
+export default async function getVisitsArray(options) {
   const visits = [];
-  getHistorys(options).then((historys) => {
-    historys.forEach((history) => {
-      getVisits({ url: history.url }).then((visit) => {
-        visits.push(visit);
-      });
-    });
+  const historys = await getHistorys(options);
+  historys.forEach((history) => {
+    (async () => {
+      const visit = await getVisits({ url: history.url });
+      visits.push(visit);
+    })();
   });
-  return visits;
+
+  return { visits, historys };
 }
