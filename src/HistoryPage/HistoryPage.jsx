@@ -62,43 +62,57 @@ function HotHistory() {
   );
 }
 
+function InputDate({ yesterday }) {
+  if (yesterday) {
+    return (
+      <div className="field is-grouped is-grouped-multiline">
+        <p className="control">
+          <input className="input" type="date" defaultValue="0" />
+        </p>
+      </div>
+    );
+  } else {
+    return <div></div>;
+  }
+}
+
 function Form(props) {
   function handleSubmit(event) {
     event.preventDefault();
-    const date = event.target[0];
-    const time = event.target[1];
-    props.onFormSubmit({ d: date.value, t: time.value });
+    const date =
+      event.target[0].value === "-1"
+        ? event.target[1].value
+        : event.target[0].value;
+    props.onFormSubmit(date);
   }
 
-  const [dropdown, setDropdown] = "no-active";
+  const [yesterday, setYesterday] = useState(false);
+
+  const selectChange = (value) => {
+    if (value === "-1") {
+      setYesterday(true);
+    } else {
+      setYesterday(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="section">
+      <div className="field">
         <div className="select">
-          <select defaultValue="全期間">
-            <option>全期間</option>
-            <option>今日</option>
-            <option>昨日</option>
-            <option>過去7日間</option>
-            <option>過去30日間</option>
-            <option>カスタム</option>
+          <select
+            defaultValue="過去24時間"
+            onChange={(event) => selectChange(event.target.value)}
+          >
+            <option value="6">過去６時間</option>
+            <option value="12">過去12時間</option>
+            <option value="24">過去24時間</option>
+            <option value="-1">昨日以降</option>
           </select>
         </div>
       </div>
 
-      <div className="section">
-        <div className="field is-grouped is-grouped-multiline">
-          <p className="control">
-            <label className="label">日にち</label>
-            <input className="input" type="date" defaultValue="0" />
-          </p>
-          <p className="control">
-            <label className="label">日にち</label>
-            <input className="input" type="date" defaultValue="1" />
-          </p>
-        </div>
-      </div>
+      <InputDate yesterday={yesterday} />
 
       <button className="button is-primary" type="submit" value="submit">
         適用
@@ -107,12 +121,9 @@ function Form(props) {
   );
 }
 
-function FormModal({ show, setShow }) {
-  const [date, setDate] = useState(0);
-  const [time, setTime] = useState(1);
+function FormModal({ show, setShow, setFilter }) {
   function reloadDate(props) {
-    setDate(props.d);
-    setTime(props.t);
+    setFilter(props);
   }
 
   function closeModal() {
@@ -145,20 +156,23 @@ function VisitsHistory() {
     setShow("modal is-active");
   };
 
+  const [filtering, setFiltering] = useState("24");
+  console.log(filtering);
+
   return (
     <div>
       <div className="container">
         <button className="button" onClick={openModal}>
           日付でフィルタリング
         </button>
-        <FormModal show={show} setShow={setShow} />
+        <FormModal show={show} setShow={setShow} setFilter={setFiltering} />
       </div>
 
       <div className="section">
         <div className="container">
           <div className="box">
             <ErrorBoundary>
-              <VisitsHistoryChart {...{}} />
+              <VisitsHistoryChart filter={filtering} />
             </ErrorBoundary>
           </div>
         </div>
