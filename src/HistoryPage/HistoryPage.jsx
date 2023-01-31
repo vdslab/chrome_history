@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import HotHistoryChart from "./HotHistoryChart";
 import VisitsHistoryChart from "./VisitsHIstoryChart";
 import "bulma/css/bulma.css";
@@ -26,18 +26,18 @@ function Router() {
               <aside className="menu">
                 <ul className="menu-list">
                   <li>
-                    <Link to="HotHistory">Hot</Link>
+                    <Link to="/HotHistory">今の履歴</Link>
                   </li>
                   <li>
-                    <Link to="VisitsHistory">Visits</Link>
+                    <Link to="/VisitsHistory">過去の履歴</Link>
                   </li>
                 </ul>
               </aside>
             </div>
             <div className="column is-10">
               <Routes>
-                <Route path="HotHistory" element={<HotHistory />}></Route>
-                <Route path="VisitsHistory" element={<VisitsHistory />} />
+                <Route path="/HotHistory" element={<HotHistory />}></Route>
+                <Route path="/VisitsHistory" element={<VisitsHistory />} />
               </Routes>
             </div>
           </div>
@@ -59,12 +59,57 @@ function HotHistory() {
   );
 }
 
-function VisitsHistory() {
+function Form(props) {
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log(event);
+    const date = event.target[0];
+    const time = event.target[1];
+    console.log(date.value, time.value);
+    props.onFormSubmit({ d: date.value, t: time.value });
+  }
+
   return (
     <div className="section">
       <div className="container">
-        <div className="box">
-          <VisitsHistoryChart />
+        <form className="box" onSubmit={handleSubmit}>
+          <div className="field">
+            <label className="label">日にち</label>
+            <div className="control">
+              <input className="input" type="number" defaultValue="0" />
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">時間</label>
+            <div className="control">
+              <input className="input" type="number" defaultValue="1" />
+            </div>
+          </div>
+          <button className="button is-primary" type="submit" value="submit">
+            GO
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function VisitsHistory() {
+  const [date, setDate] = useState(0);
+  const [time, setTime] = useState(1);
+  function reloadDate(props) {
+    setDate(props.d);
+    setTime(props.t);
+    console.log("222", props.t);
+  }
+  return (
+    <div>
+      <Form onFormSubmit={reloadDate} />
+      <div className="section">
+        <div className="container">
+          <div className="box">
+            <VisitsHistoryChart />
+          </div>
         </div>
       </div>
     </div>
