@@ -8,11 +8,16 @@ export default function VisitsHistoryChart({ filter }) {
   const [visits, setVisits] = useState([]);
 
   useEffect(() => {
-    console.log("filter", filter);
-    const limitTime = new Date().getTime() - filter * 60 * 60 * 1000;
+    const limitTime =
+      filter.length >= 4
+        ? new Date(filter).getTime() - 24 * 60 * 60 * 1000
+        : new Date().getTime() - filter * 60 * 60 * 1000;
+
     const options = {
       text: "",
       maxResults: 10000,
+      endTime:
+        filter.length >= 4 ? new Date(filter).getTime() : new Date().getTime(),
       startTime: limitTime,
     };
 
@@ -22,7 +27,7 @@ export default function VisitsHistoryChart({ filter }) {
         setHistory(historys);
       });
     })();
-  }, []);
+  }, [filter]);
 
   if (visits.length == 0) {
     return (
@@ -159,6 +164,7 @@ export default function VisitsHistoryChart({ filter }) {
 
   const raw_family = [];
   const links = [];
+  const rootChildren = [];
   uniqueRawLinks.forEach(({ data: { target, source } }) => {
     // link
     const alreadyParent =
@@ -191,17 +197,33 @@ export default function VisitsHistoryChart({ filter }) {
           children: [target],
         },
       });
+      rootChildren.push(source);
       return;
     }
 
     const newChild = [...new Set([...family[fidx].data.children, target])];
     raw_family[fidx].data.children = newChild;
   });
+  const oneNodeIds = nodes
+    .filter(({ data: { id, url } }) => {
+      if (url === "http://abehiroshi.la.coocan.jp/top.htm") {
+        console.log(id);
+      }
+      return links.some(({ data: { source, target } }) => {
+        return id === source || id === target;
+      });
+    })
+    .map(({ data: { id } }) => {
+      return id;
+    });
+  const roots = rootChildren.concat(oneNodeIds);
+  const family = [...raw_family, { data: { parent: "root", children: roots } }];
+  nodes.push({ data: { id: "root", title: "root", url: "root" } });
 
   return (
     <>
       <ErrorBoundary>
-        <VisitsChart {...{ nodes, links, family: raw_family }} />
+        <VisitsChart {...{ nodes, links, family }} />
       </ErrorBoundary>
     </>
   );

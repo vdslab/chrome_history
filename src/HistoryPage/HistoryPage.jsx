@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HotHistoryChart from "./HotHistoryChart";
 import VisitsHistoryChart from "./VisitsHIstoryChart";
 import "bulma/css/bulma.css";
@@ -163,7 +163,7 @@ function VisitsHistory() {
     setShow("modal is-active");
   };
 
-  const [filtering, setFiltering] = useState("24");
+  const [filtering, setFiltering] = useState(0);
   console.log(filtering);
 
   return (
