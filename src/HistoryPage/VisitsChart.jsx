@@ -83,7 +83,6 @@ export default function VisitsChart({ nodes, links, family }) {
 
     const layout = { ...defaultLayout };
     const stopEvent = () => {
-      // console.log("stop");
       cy.nodes().positions((node, i) => {
         node.ungrabify();
 

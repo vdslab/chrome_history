@@ -164,7 +164,6 @@ function VisitsHistory() {
   };
 
   const [filtering, setFiltering] = useState(0);
-  console.log(filtering);
 
   return (
     <div>
