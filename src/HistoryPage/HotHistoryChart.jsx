@@ -8,14 +8,6 @@ export default function HotHistoryChart() {
   const [family, setFamily] = useState([]);
 
   useEffect(() => {
-    // chrome.runtime.getBackgroundPage(function (backgroundPage) {
-    //   (async () => {
-    //     const { nodes, links, family } = await backgroundPage.getData();
-    //     setNodes(nodes);
-    //     setLinks(links);
-    //     setFamily(family);
-    //   })();
-    // });
     (async () => {
       const port = chrome.runtime.connect();
       const { nodes, links, family } = await chrome.runtime.sendMessage(
@@ -44,8 +36,6 @@ export default function HotHistoryChart() {
   if (!nodes || !links || !family) {
     return <p>loading</p>;
   }
-
-  // console.log(nodes, links, family);
 
   return (
     <>

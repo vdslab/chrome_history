@@ -83,7 +83,7 @@ export default function VisitsChart({ nodes, links, family }) {
 
     const layout = { ...defaultLayout };
     const stopEvent = () => {
-      console.log("stop");
+      // console.log("stop");
       cy.nodes().positions((node, i) => {
         node.ungrabify();
 
@@ -203,23 +203,22 @@ export default function VisitsChart({ nodes, links, family }) {
           zoomingEnabled={true}
           maxZoom={1.5}
           minZoom={0.3}
-          wheelSensitivity={0.05}
           autounselectify={false}
           boxSelectionEnabled={true}
           layout={layout}
           stylesheet={styleSheet}
           cy={(cy) => {
-            console.log("EVT", cy);
+            // console.log("EVT", cy);
             cyRef.current = cy;
 
-            cy.on("tap", "node", (evt) => {
-              // var node = evt.target;
-              // console.log("EVT", evt);
-              // console.log("TARGET", node.data().position());
-              // console.log("TARGET TYPE", typeof node[0]);
-              // console.log("TARGET URL", node.data().url);
-              // chrome.tabs.create({ url: node.data().url });
-            });
+            // cy.on("tap", "node", (evt) => {
+            // var node = evt.target;
+            // console.log("EVT", evt);
+            // console.log("TARGET", node.data().position());
+            // console.log("TARGET TYPE", typeof node[0]);
+            // console.log("TARGET URL", node.data().url);
+            // chrome.tabs.create({ url: node.data().url });
+            // });
           }}
         />
       </div>

@@ -14,7 +14,6 @@ export default function HistoryChart({ nodes, links, family }) {
       return { graphData: null };
     }
 
-
     const nodeBodyData = nodes.map(({ data }) => {
       return {
         data: {
@@ -88,7 +87,7 @@ export default function HistoryChart({ nodes, links, family }) {
 
     const layout = { ...defaultLayout };
     const stopEvent = () => {
-      console.log("stop");
+      // console.log("stop");
       cy.nodes().positions((node, i) => {
         node.ungrabify();
 
@@ -212,7 +211,7 @@ export default function HistoryChart({ nodes, links, family }) {
         layout={layout}
         stylesheet={styleSheet}
         cy={(cy) => {
-          console.log("EVT", cy);
+          // console.log("EVT", cy);
           cyRef.current = cy;
 
           // cy.on("tap", "node", (evt) => {
