@@ -114,7 +114,14 @@ function Form(props) {
 
       <InputDate yesterday={yesterday} />
 
-      <button className="button is-primary" type="submit" value="submit">
+      <button
+        className="button is-primary "
+        type="submit"
+        value="submit"
+        onClick={() => {
+          props.close();
+        }}
+      >
         適用
       </button>
     </form>
@@ -132,17 +139,17 @@ function FormModal({ show, setShow, setFilter }) {
 
   return (
     <div className={show}>
-      <div className="modal-background"></div>
+      <div className="modal-background" onClick={() => closeModal()}></div>
       <div className="modal-card">
         <header className="modal-card-head">
           <div className="container">
             <p className="modal-card-title">日付でフィルタリング</p>
           </div>
-          <button className="delete" onClick={closeModal}></button>
+          <button className="delete" onClick={() => closeModal()}></button>
         </header>
         <section className="modal-card-body">
           <div className="content">
-            <Form onFormSubmit={reloadDate} />
+            <Form onFormSubmit={reloadDate} close={closeModal} />
           </div>
         </section>
       </div>
