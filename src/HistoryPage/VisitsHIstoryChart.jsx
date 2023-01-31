@@ -20,13 +20,11 @@ export default function VisitsHistoryChart({ filter }) {
         filter.length >= 4 ? new Date(filter).getTime() : new Date().getTime(),
       startTime: limitTime,
     };
-    console.log(options);
 
     (async () => {
       getVisitsArray(options).then(({ visits, historys }) => {
         setVisits(visits);
         setHistory(historys);
-        // console.log("get visit array", visits);
       });
     })();
   }, [filter]);
@@ -46,8 +44,6 @@ export default function VisitsHistoryChart({ filter }) {
     ).sort((l, r) => {
       return l.visitTime - r.visitTime;
     });
-    // console.log("visit", visits);
-    console.log("filter", filter);
 
     const linkVisits = uniqueVisits.filter(
       (item) => item.transition === "link"
@@ -165,8 +161,6 @@ export default function VisitsHistoryChart({ filter }) {
 
     return { nodes, links, family };
   }, [visits]);
-
-  // console.log(nodes);
 
   //   const node = visits.map((value) => {
   //     const historyItem = history.find((h) => h.id === value[0].id);
