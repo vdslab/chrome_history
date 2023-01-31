@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import getVisitsArray from "./getHistory";
-import HistoryChart from "../HistoryChart";
 import VisitsChart from "./VisitsChart";
 
 export default function VisitsHistoryChart() {
