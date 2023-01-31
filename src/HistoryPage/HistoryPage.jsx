@@ -36,8 +36,8 @@ function Router() {
             </div>
             <div className="column is-10">
               <Routes>
-                <Route path="HotHistory" element={<HotHistoryChart />}></Route>
-                <Route path="VisitsHistory" element={<VisitsHistoryChart />} />
+                <Route path="HotHistory" element={<HotHistory />}></Route>
+                <Route path="VisitsHistory" element={<VisitsHistory />} />
               </Routes>
             </div>
           </div>
@@ -47,6 +47,29 @@ function Router() {
   );
 }
 
+function HotHistory() {
+  return (
+    <div className="section">
+      <div className="container">
+        <div className="box">
+          <HotHistoryChart />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VisitsHistory() {
+  return (
+    <div className="section">
+      <div className="container">
+        <div className="box">
+          <VisitsHistoryChart />
+        </div>
+      </div>
+    </div>
+  );
+}
 export default function HistoryPage() {
   // var referrer = document.referrer;
 
