@@ -150,7 +150,7 @@ export default function VisitsHistoryChart() {
   //     .flat();
   // var referrer = document.referrer;
 
-  const links = Array.from(
+  const uniqueRawLinks = Array.from(
     new Map(
       raw_links.map((item) => {
         const key = item.data.target + item.data.source;
@@ -159,9 +159,9 @@ export default function VisitsHistoryChart() {
     ).values()
   );
 
-  console.log("links", links);
+  console.log("uniqueRawLinks", uniqueRawLinks);
   const raw_family = [];
-  links.forEach((link) => {
+  uniqueRawLinks.forEach((link) => {
     const fidx = raw_family.findIndex(
       ({ parent }) => parent === link.data.source
     );
@@ -184,7 +184,9 @@ export default function VisitsHistoryChart() {
       <p>visits chart</p>
       <div>
         {/* <HistoryChart {...{ nodes: node, links: edges }} /> */}
-        <HistoryChart {...{ nodes, links, family: raw_family }} />
+        <HistoryChart
+          {...{ nodes, links: uniqueRawLinks, family: raw_family }}
+        />
       </div>
     </div>
   );
