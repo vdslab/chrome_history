@@ -161,21 +161,20 @@ export default function VisitsHistoryChart() {
 
   console.log("uniqueRawLinks", uniqueRawLinks);
   const raw_family = [];
-  uniqueRawLinks.forEach((link) => {
-    const fidx = raw_family.findIndex(
-      ({ parent }) => parent === link.data.source
-    );
+  uniqueRawLinks.forEach(({ data: { target, source } }) => {
+    const fidx = raw_family.findIndex(({ parent }) => parent === source);
+
     if (fidx < 0) {
       raw_family.push({
         data: {
-          parent: link.data.source,
-          children: [link.data.target],
+          parent: source,
+          children: [target],
         },
       });
       return;
     }
 
-    raw_family[fidx].children.push(link.data.target);
+    raw_family[fidx].children.push(target);
   });
   console.log("raw_family", raw_family);
 
