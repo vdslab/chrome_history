@@ -83,16 +83,6 @@ export default function VisitsHistoryChart() {
       };
     })
     .filter((item) => item);
-  const links = Array.from(
-    new Map(
-      raw_links.map((item) => {
-        const key = item.data.target + item.data.source;
-        return [key, item];
-      })
-    ).values()
-  );
-  //   console.log("raw_links", raw_links);
-  //   console.log("links", links);
 
   //   const node = visits.map((value) => {
   //     const historyItem = history.find((h) => h.id === value[0].id);
@@ -160,25 +150,41 @@ export default function VisitsHistoryChart() {
   //     .flat();
   // var referrer = document.referrer;
 
+  const links = Array.from(
+    new Map(
+      raw_links.map((item) => {
+        const key = item.data.target + item.data.source;
+        return [key, item];
+      })
+    ).values()
+  );
+
   console.log("links", links);
-  const family = [];
+  const raw_family = [];
   links.forEach((link) => {
-    const fidx = family.findIndex(({ parent }) => parent === link.data.source);
+    const fidx = raw_family.findIndex(
+      ({ parent }) => parent === link.data.source
+    );
     if (fidx < 0) {
-      family.push({ parent: link.data.source, children: [link.data.target] });
+      raw_family.push({
+        data: {
+          parent: link.data.source,
+          children: [link.data.target],
+        },
+      });
       return;
     }
 
-    family[fidx].children.push(link.data.target);
+    raw_family[fidx].children.push(link.data.target);
   });
-  console.log(family);
+  console.log("raw_family", raw_family);
 
   return (
     <div>
       <p>visits chart</p>
       <div>
         {/* <HistoryChart {...{ nodes: node, links: edges }} /> */}
-        <HistoryChart {...{ nodes, links }} />
+        <HistoryChart {...{ nodes, links, family: raw_family }} />
       </div>
     </div>
   );
