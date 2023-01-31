@@ -83,7 +83,6 @@ export default function VisitsChart({ nodes, links, family }) {
 
     const layout = { ...defaultLayout };
     const stopEvent = () => {
-      // console.log("stop");
       cy.nodes().positions((node, i) => {
         node.ungrabify();
 
@@ -142,39 +141,40 @@ export default function VisitsChart({ nodes, links, family }) {
       (data, current) => current.concat(data)
     );
 
-    const constraintHorizontalArrays = family.map(({ data: { children } }) => {
-      if (children.length <= 1) {
-        return;
-      }
+    // const constraintHorizontalArrays = family.map(({ data: { children } }) => {
+    //   if (children.length <= 1) {
+    //     return;
+    //   }
 
-      const constraints = children.map((id, index) => {
-        if (index === children.length - 1) {
-          return;
-        }
+    //   const constraints = children.map((id, index) => {
+    //     if (index === children.length - 1) {
+    //       return;
+    //     }
 
-        return {
-          axis: "x",
-          left: cy.$id(id),
-          right: cy.$id(children[index + 1]),
-          gap: 75,
-        };
-      });
+    //     return {
+    //       axis: "x",
+    //       left: cy.$id(id),
+    //       right: cy.$id(children[index + 1]),
+    //       gap: 75,
+    //     };
+    //   });
 
-      return constraints.filter((item) => item);
-    });
+    //   return constraints.filter((item) => item);
+    // });
 
-    const constraintorizontal = constraintHorizontalArrays
-      .filter((item) => item)
-      .reduce((data, current) => current.concat(data), []);
+    // const constraintorizontal = constraintHorizontalArrays
+    //   .filter((item) => item)
+    //   .reduce((data, current) => current.concat(data), []);
 
-    const constraints = constraintVertical.concat(constraintorizontal);
+    const constraints = constraintVertical;
+    // .concat(constraintorizontal);
 
     layout.gapInequalities = constraints;
 
-    const bodyNodes = cy.filter("node[type='node']");
-    bodyNodes.forEach((node) => {
-      cy.$id(`ghost-${node.data().id}`).position("x", node.position("x"));
-    });
+    // const bodyNodes = cy.filter("node[type='node']");
+    // bodyNodes.forEach((node) => {
+    //   cy.$id(`ghost-${node.data().id}`).position("x", node.position("x"));
+    // });
 
     cy.layout(layout).run();
   }, [graphData]);
@@ -202,7 +202,8 @@ export default function VisitsChart({ nodes, links, family }) {
           style={{ width: graphWidth, height: graphHeight }}
           zoomingEnabled={true}
           maxZoom={1.5}
-          minZoom={0.3}
+          minZoom={0.05}
+          wheelSensitivity={0.5}
           autounselectify={false}
           boxSelectionEnabled={true}
           layout={layout}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HotHistoryChart from "./HotHistoryChart";
 import VisitsHistoryChart from "./VisitsHIstoryChart";
 import "bulma/css/bulma.css";
@@ -27,18 +27,18 @@ function Router() {
               <aside className="menu">
                 <ul className="menu-list">
                   <li>
-                    <Link to="HotHistory">Hot</Link>
+                    <Link to="/HotHistory">今の履歴</Link>
                   </li>
                   <li>
-                    <Link to="VisitsHistory">Visits</Link>
+                    <Link to="/VisitsHistory">過去の履歴</Link>
                   </li>
                 </ul>
               </aside>
             </div>
             <div className="column is-10">
               <Routes>
-                <Route path="HotHistory" element={<HotHistory />}></Route>
-                <Route path="VisitsHistory" element={<VisitsHistory />} />
+                <Route path="/HotHistory" element={<HotHistory />}></Route>
+                <Route path="/VisitsHistory" element={<VisitsHistory />} />
               </Routes>
             </div>
           </div>
@@ -62,14 +62,125 @@ function HotHistory() {
   );
 }
 
-function VisitsHistory() {
+function InputDate({ yesterday }) {
+  if (yesterday) {
+    return (
+      <div className="field is-grouped is-grouped-multiline">
+        <p className="control">
+          <input className="input" type="date" defaultValue="0" />
+        </p>
+      </div>
+    );
+  } else {
+    return <div></div>;
+  }
+}
+
+function Form(props) {
+  function handleSubmit(event) {
+    event.preventDefault();
+    const date =
+      event.target[0].value === "-1"
+        ? event.target[1].value
+        : event.target[0].value;
+    props.onFormSubmit(date);
+  }
+
+  const [yesterday, setYesterday] = useState(false);
+
+  const selectChange = (value) => {
+    if (value === "-1") {
+      setYesterday(true);
+    } else {
+      setYesterday(false);
+    }
+  };
+
   return (
-    <div className="section">
+    <form onSubmit={handleSubmit}>
+      <div className="field">
+        <div className="select">
+          <select
+            defaultValue="過去24時間"
+            onChange={(event) => selectChange(event.target.value)}
+          >
+            <option value="6">過去６時間</option>
+            <option value="12">過去12時間</option>
+            <option value="24">過去24時間</option>
+            <option value="-1">昨日以降</option>
+          </select>
+        </div>
+      </div>
+
+      <InputDate yesterday={yesterday} />
+
+      <button
+        className="button is-primary "
+        type="submit"
+        value="submit"
+        onClick={() => {
+          props.close();
+        }}
+      >
+        適用
+      </button>
+    </form>
+  );
+}
+
+function FormModal({ show, setShow, setFilter }) {
+  function reloadDate(props) {
+    setFilter(props);
+  }
+
+  function closeModal() {
+    setShow("modal");
+  }
+
+  return (
+    <div className={show}>
+      <div className="modal-background" onClick={() => closeModal()}></div>
+      <div className="modal-card">
+        <header className="modal-card-head">
+          <div className="container">
+            <p className="modal-card-title">日付でフィルタリング</p>
+          </div>
+          <button className="delete" onClick={() => closeModal()}></button>
+        </header>
+        <section className="modal-card-body">
+          <div className="content">
+            <Form onFormSubmit={reloadDate} close={closeModal} />
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function VisitsHistory() {
+  const [show, setShow] = useState("modal");
+  const openModal = () => {
+    setShow("modal is-active");
+  };
+
+  const [filtering, setFiltering] = useState(0);
+
+  return (
+    <div>
       <div className="container">
-        <div className="box">
-          <ErrorBoundary>
-            <VisitsHistoryChart />
-          </ErrorBoundary>
+        <button className="button" onClick={openModal}>
+          日付でフィルタリング
+        </button>
+        <FormModal show={show} setShow={setShow} setFilter={setFiltering} />
+      </div>
+
+      <div className="section">
+        <div className="container">
+          <div className="box">
+            <ErrorBoundary>
+              <VisitsHistoryChart filter={filtering} />
+            </ErrorBoundary>
+          </div>
         </div>
       </div>
     </div>
