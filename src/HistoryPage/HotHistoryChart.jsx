@@ -8,7 +8,7 @@ export default function HotHistoryChart() {
 
   useEffect(() => {
     chrome.runtime.sendMessage("get-data", (response) => {
-      const { nodes, links } = response;
+      const { nodes, links, family } = response;
       setNodes(nodes);
       setLinks(links);
       setFamily(family);

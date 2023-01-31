@@ -10,8 +10,8 @@ export default function HistoryChart({ nodes, links, family }) {
   const cyRef = useRef(null);
 
   const { graphData } = useMemo(() => {
-    if (nodes.length === 0 || links.length === 0) {
-      return { graphData: null };
+    if (!nodes || !links || nodes.length === 0 || links.length === 0) {
+      return { graphData: null, error: "" };
     }
 
     const nodeBodyData = nodes.map(({ data }) => {
