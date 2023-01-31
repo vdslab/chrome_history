@@ -228,8 +228,8 @@ export default function HistoryChart({ nodes, links, family }) {
 
   const width = "800px";
   const height = "600px";
-  const graphWidth = "80vw";
-  const graphHeight = "80vh";
+  const graphWidth = "100%";
+  const graphHeight = "70vh";
   const layout = defaultLayout;
 
   const styleSheet = [
@@ -300,9 +300,7 @@ export default function HistoryChart({ nodes, links, family }) {
 
   return (
     <div>
-      <p>以下に描画</p>
-
-      <div style={{ width: width, height: height }}>
+      <div>
         <CytoscapeComponent
           elements={CytoscapeComponent.normalizeElements(graphData)}
           // pan={{ x: 200, y: 200 }}
