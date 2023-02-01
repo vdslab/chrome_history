@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import getVisitsArray from "./getHistory";
 import VisitsChart from "./VisitsChart";
 import { ErrorBoundary } from "./ErrorBound";
 
-export default function VisitsHistoryChart() {
+export default function VisitsHistoryChart({ filter }) {
   const [history, setHistory] = useState([]);
   const [visits, setVisits] = useState([]);
 
@@ -18,9 +18,11 @@ export default function VisitsHistoryChart() {
   }
 
   useEffect(() => {
+    const { startTime, endTime } = getLimit(filter);
+
     const options = {
       text: "",
-      maxResults: 100000,
+      maxResults: 10000,
       endTime,
       startTime,
     };
@@ -178,43 +180,6 @@ export default function VisitsHistoryChart() {
       </div>
     );
   }
-
-  // const findsource = (referringId) => {
-  //   if (referringId === 0) {
-  //     return;
-  //   } else {
-  //     for (const v of visits) {
-  //       for (const w of v) {
-  //         if (referringId === Number(w.visitId)) {
-  //           return { id: w.id, time: w.visitTime };
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
-
-  // const reverseFamily = visits.map((value) => {
-  //   return {
-  //     target: value[0].id,
-  //     source: value
-  //       .map((v) => {
-  //         const sourceid = findsource(Number(v.referringVisitId));
-  //         if (sourceid) {
-  //           return sourceid.id;
-  //         }
-  //       })
-  //       .filter((element) => element),
-  //     time: value
-  //       .map((w) => {
-  //         const sourcetime = findsource(Number(w.referringVisitId));
-  //         if (sourcetime) {
-  //           return sourcetime.time;
-  //         }
-  //       })
-  //       .filter((element) => element),
-  //   };
-  // });
-
   // // var referrer = document.referrer;
 
   if (!nodes || !links || !family) {
@@ -228,7 +193,7 @@ export default function VisitsHistoryChart() {
   return (
     <>
       <ErrorBoundary>
-        <VisitsChart {...{ nodes, links, family: raw_family }} />
+        <VisitsChart {...{ nodes, links, family }} />
       </ErrorBoundary>
     </>
   );
