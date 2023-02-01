@@ -47,7 +47,7 @@ export default function VisitsHistoryChart({ filter }) {
       if (startTime > visitTime) {
         return current;
       }
-      // console.log(current, now);
+
       const idx = current.findIndex(({ id, referringVisitId }) => {
         return id === now.id && referringVisitId === now.referringVisitId;
       });
@@ -194,8 +194,6 @@ export default function VisitsHistoryChart({ filter }) {
       </div>
     );
   }
-
-  console.log({ nodes, links, family });
 
   return (
     <>
