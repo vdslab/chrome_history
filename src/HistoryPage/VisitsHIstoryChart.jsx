@@ -42,8 +42,6 @@ export default function VisitsHistoryChart({ filter }) {
       return { nodes: null, links: null, family: null };
     }
 
-    const { startTime } = getLimit(filter);
-
     const uniqueVisits = visits.flat().reduce((current, now) => {
       const { id, referringVisitId, transition, visitId, visitTime } = now;
       if (startTime > visitTime) {
@@ -79,19 +77,25 @@ export default function VisitsHistoryChart({ filter }) {
           return [key, item];
         })
       ).values()
-    ).map(({ data: { id } }) => id);
+    );
 
-    const nodes = uniqueIdVisits.map((visit) => {
-      const hist = history.find((h) => h.id === visit.id);
-      return {
-        data: {
-          id: visit.id,
-          title: hist.title,
-          url: hist.url,
-          time: hist.visitTime,
-        },
-      };
-    });
+    const nodes = uniqueIdVisits
+      .map((visit) => {
+        const hist = history.find((h) => h.id === visit.id);
+
+        if (!hist) {
+          return;
+        }
+        return {
+          data: {
+            id: visit.id,
+            title: hist.title,
+            url: hist.url,
+            time: hist.visitTime,
+          },
+        };
+      })
+      .filter((item) => item);
 
     const raw_links = uniqueVisits
       .map((visit) => {
@@ -163,12 +167,13 @@ export default function VisitsHistoryChart({ filter }) {
     });
 
     return { nodes, links, family: raw_family };
-  });
+  }, [visits]);
+  // });
 
   if (new Date(filter).getTime() > new Date().getTime()) {
     return (
       <div>
-        <p>no data</p>
+        <p>no data. plese select before now</p>
       </div>
     );
   }
@@ -176,7 +181,7 @@ export default function VisitsHistoryChart({ filter }) {
   if (filter <= 0) {
     return (
       <div>
-        <p>no data</p>
+        <p>no data. plese select time</p>
       </div>
     );
   }
@@ -189,6 +194,8 @@ export default function VisitsHistoryChart({ filter }) {
       </div>
     );
   }
+
+  console.log({ nodes, links, family });
 
   return (
     <>
