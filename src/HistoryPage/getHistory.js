@@ -11,12 +11,11 @@ async function getVisits(options) {
 export default async function getVisitsArray(options) {
   const visits = [];
   const historys = await getHistorys(options);
-  historys.forEach((history) => {
-    (async () => {
-      const visit = await getVisits({ url: history.url });
-      visits.push(visit);
-    })();
-  });
+
+  for (const history of historys) {
+    const visit = await getVisits({ url: history.url });
+    visits.push(visit);
+  }
 
   return { visits, historys };
 }

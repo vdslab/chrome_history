@@ -7,18 +7,24 @@ export default function VisitsHistoryChart({ filter }) {
   const [history, setHistory] = useState([]);
   const [visits, setVisits] = useState([]);
 
-  useEffect(() => {
-    const limitTime =
+  function getLimit(filter) {
+    const startTime =
       filter.length >= 6
         ? new Date(filter).getTime() - 24 * 60 * 60 * 1000
         : new Date().getTime() - Number(filter) * 60 * 60 * 1000;
+    const endTime =
+      filter.length >= 4 ? new Date(filter).getTime() : new Date().getTime();
+    return { startTime, endTime };
+  }
+
+  useEffect(() => {
+    const { startTime, endTime } = getLimit(filter);
 
     const options = {
       text: "",
       maxResults: 10000,
-      endTime:
-        filter.length >= 4 ? new Date(filter).getTime() : new Date().getTime(),
-      startTime: limitTime,
+      endTime,
+      startTime,
     };
 
     (async () => {
@@ -29,52 +35,74 @@ export default function VisitsHistoryChart({ filter }) {
     })();
   }, [filter]);
 
+  const { startTime, endTime } = getLimit(filter);
+
   const { nodes, links, family } = useMemo(() => {
     if (!visits || visits.length == 0) {
       return { nodes: null, links: null, family: null };
     }
 
-    const uniqueVisits = Array.from(
-      new Map(
-        visits.flat().map((item) => {
-          const key = item.id + item.referringVisitId;
-          return [key, item];
-        })
-      ).values()
-    ).sort((l, r) => {
-      return l.visitTime - r.visitTime;
-    });
+    const uniqueVisits = visits.flat().reduce((current, now) => {
+      const { id, referringVisitId, transition, visitId, visitTime } = now;
+      if (startTime > visitTime) {
+        return current;
+      }
 
-    const linkVisits = uniqueVisits.filter(
-      (item) => item.transition === "link"
-    );
+      const idx = current.findIndex(({ id, referringVisitId }) => {
+        return id === now.id && referringVisitId === now.referringVisitId;
+      });
+
+      if (idx < 0) {
+        current.push({
+          id,
+          referringVisitId,
+          transitions: [transition],
+          visitIds: [visitId],
+          visitTimes: [visitTime],
+        });
+        return current;
+      }
+
+      current[idx].transitions.push(transition);
+      current[idx].visitIds.push(visitId);
+      current[idx].visitTimes.push(visitTime);
+
+      return current;
+    }, []);
 
     const uniqueIdVisits = Array.from(
       new Map(
-        linkVisits.map((item) => {
+        uniqueVisits.map((item) => {
           const key = item.id;
           return [key, item];
         })
       ).values()
     );
 
-    const nodes = uniqueIdVisits.map((visit) => {
-      const hist = history.find((h) => h.id === visit.id);
-      return {
-        data: {
-          id: visit.id,
-          title: hist.title,
-          url: hist.url,
-          time: hist.visitTime,
-        },
-      };
-    });
-
-    const raw_links = linkVisits
+    const nodes = uniqueIdVisits
       .map((visit) => {
-        const source = linkVisits.find((from) => {
-          return visit.referringVisitId === from.visitId;
+        const hist = history.find((h) => h.id === visit.id);
+
+        if (!hist) {
+          return;
+        }
+        return {
+          data: {
+            id: visit.id,
+            title: hist.title,
+            url: hist.url,
+            time: hist.visitTime,
+          },
+        };
+      })
+      .filter((item) => item);
+
+    const raw_links = uniqueVisits
+      .map((visit) => {
+        const source = uniqueVisits.find((from) => {
+          return from.visitIds.some((id) => id === visit.referringVisitId);
         });
+
         if (!source) {
           return;
         }
@@ -99,7 +127,6 @@ export default function VisitsHistoryChart({ filter }) {
 
     const raw_family = [];
     const links = [];
-    const rootChildren = [];
     uniqueRawLinks.forEach(({ data: { target, source } }) => {
       // link
       const alreadyParent =
@@ -118,7 +145,6 @@ export default function VisitsHistoryChart({ filter }) {
           isBack,
         },
       });
-
       // family
       const fidx = raw_family.findIndex(({ parent }) => parent === source);
 
@@ -133,7 +159,6 @@ export default function VisitsHistoryChart({ filter }) {
             children: [target],
           },
         });
-        rootChildren.push(source);
         return;
       }
 
@@ -141,92 +166,27 @@ export default function VisitsHistoryChart({ filter }) {
       raw_family[fidx].data.children = newChild;
     });
 
-    const oneNodeIds = nodes
-      .filter(({ data: { id, url } }) => {
-        return links.some(({ data: { source, target } }) => {
-          return id === source || id === target;
-        });
-      })
-      .map(({ data: { id } }) => {
-        return id;
-      });
-
-    const roots = rootChildren.concat(oneNodeIds);
-    const family = [
-      ...raw_family,
-      { data: { parent: "root", children: roots } },
-    ];
-
-    nodes.push({ data: { id: "root", title: "root", url: "root" } });
-
-    return { nodes, links, family };
+    return { nodes, links, family: raw_family };
   }, [visits]);
+  // });
 
-  //   const node = visits.map((value) => {
-  //     const historyItem = history.find((h) => h.id === value[0].id);
-  //     return {
-  //       data: {
-  //         id: value[0].id,
-  //         index: 0,
-  //         title: historyItem.title,
-  //         url: historyItem.url,
-  //       },
-  //     };
-  //   });
+  if (new Date(filter).getTime() > new Date().getTime()) {
+    return (
+      <div>
+        <p>no data. plese select before now</p>
+      </div>
+    );
+  }
 
-  const findsource = (referringId) => {
-    if (referringId === 0) {
-      return;
-    } else {
-      for (const v of visits) {
-        for (const w of v) {
-          if (referringId === Number(w.visitId)) {
-            return { id: w.id, time: w.visitTime };
-          }
-        }
-      }
-    }
-  };
+  if (filter <= 0) {
+    return (
+      <div>
+        <p>no data. plese select time</p>
+      </div>
+    );
+  }
+  // // var referrer = document.referrer;
 
-  const reverseFamily = visits.map((value) => {
-    return {
-      target: value[0].id,
-      source: value
-        .map((v) => {
-          const sourceid = findsource(Number(v.referringVisitId));
-          if (sourceid) {
-            return sourceid.id;
-          }
-        })
-        .filter((element) => element),
-      time: value
-        .map((w) => {
-          const sourcetime = findsource(Number(w.referringVisitId));
-          if (sourcetime) {
-            return sourcetime.time;
-          }
-        })
-        .filter((element) => element),
-    };
-  });
-
-  //   const edges = reverseFamily
-  //     .map((value) => {
-  //       const data = value;
-  //       return value.source.map((element, index) => {
-  //         return {
-  //           data: {
-  //             target: data.target,
-  //             source: element,
-  //             time: data.time[index],
-  //             isBack: true,
-  //           },
-  //         };
-  //       });
-  //     })
-  //     .filter((element) => element.length)
-  //     .flat();
-  // var referrer = document.referrer;
   if (!nodes || !links || !family) {
     return (
       <div>
@@ -234,6 +194,7 @@ export default function VisitsHistoryChart({ filter }) {
       </div>
     );
   }
+
   return (
     <>
       <ErrorBoundary>

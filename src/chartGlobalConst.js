@@ -85,7 +85,7 @@ export const styleSheet = [
     selector: "edge[!isBack]",
     style: {
       width: 3,
-      "line-color": "#AAD8FF",
+      "line-color": "#6774cb",
       "target-arrow-color": "#6774cb",
       "target-arrow-shape": "triangle",
       "curve-style": "bezier",
@@ -95,7 +95,7 @@ export const styleSheet = [
     selector: "edge[?isBack]",
     style: {
       width: 3,
-      "line-color": "#6774cb",
+      "line-color": "#AAD8FF",
       "source-arrow-shape": "triangle",
       "curve-style": "unbundled-bezier",
       "control-point-distances": [-40, 40, -40],
