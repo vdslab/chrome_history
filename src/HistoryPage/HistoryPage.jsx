@@ -101,13 +101,16 @@ function Form(props) {
       <div className="field">
         <div className="select">
           <select
-            defaultValue="過去24時間"
+            defaultValue="0"
             onChange={(event) => selectChange(event.target.value)}
           >
-            <option value="6">過去６時間</option>
+            <option value="0" hidden>
+              履歴を取得する期間を選択
+            </option>
+            <option value="6">過去6時間</option>
             <option value="12">過去12時間</option>
             <option value="24">過去24時間</option>
-            <option value="-1">昨日以降</option>
+            <option value="-1">昨日以前</option>
           </select>
         </div>
       </div>
@@ -186,6 +189,7 @@ function VisitsHistory() {
     </div>
   );
 }
+
 export default function HistoryPage() {
   // var referrer = document.referrer;
 
