@@ -27,18 +27,16 @@ export default function VisitsHistoryChart({ filter }) {
       startTime,
     };
 
-    (async () => {
-      getVisitsArray(options).then(({ visits, historys }) => {
-        setVisits(visits);
-        setHistory(historys);
-      });
-    })();
+    getVisitsArray(options).then(({ visits, historys }) => {
+      setVisits(visits);
+      setHistory(historys);
+    });
   }, [filter]);
 
   const { startTime, endTime } = getLimit(filter);
 
   const { nodes, links, family } = useMemo(() => {
-    if (!visits || visits.length == 0) {
+    if (!visits || visits.length == 0 || !history || history.length == 0) {
       return { nodes: null, links: null, family: null };
     }
 
@@ -167,7 +165,7 @@ export default function VisitsHistoryChart({ filter }) {
     });
 
     return { nodes, links, family: raw_family };
-  }, [visits]);
+  }, [visits, history]);
   // });
 
   if (new Date(filter).getTime() > new Date().getTime()) {
