@@ -10,7 +10,7 @@ export default function VisitsChart({ nodes, links, family }) {
   const cyRef = useRef(null);
 
   const { graphData } = useMemo(() => {
-    if (nodes.length === 0 || links.length === 0) {
+    if (nodes.length === 0) {
       return { graphData: null };
     }
 
@@ -72,7 +72,7 @@ export default function VisitsChart({ nodes, links, family }) {
     };
 
     return { graphData };
-  }, [nodes, links]);
+  }, [nodes, links, family]);
 
   useEffect(() => {
     const cy = cyRef.current;
@@ -182,7 +182,7 @@ export default function VisitsChart({ nodes, links, family }) {
   if (graphData === null) {
     return (
       <div>
-        <p>no data</p>
+        <p>no graphData</p>
       </div>
     );
   }
