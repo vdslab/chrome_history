@@ -3,7 +3,7 @@
   "name": "History Tree",
   "description": "履歴を階層構造っぽく描画する",
   "version": "1.0",
-  "action": { "default_title": "History Tree", "default_popup": "index.html" },
+  "action": { "default_title": "History Tree", "default_popup": "popup.html" },
   "permissions": ["history", "tabs", "nativeMessaging", "storage"],
   "icons": {
     "16": "logo_16.png",
