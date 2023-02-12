@@ -1,3 +1,3 @@
 chrome.tabs.create({
-  url: "history-page.html",
+  url: "index.html",
 });
