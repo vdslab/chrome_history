@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "History Tree",
-  "version": "1.0",
+  "version": "0.8.0.0",
 
   "description": "履歴を階層構造っぽく描画する",
   "action": { "default_title": "History Tree", "default_popup": "popup.html" },
