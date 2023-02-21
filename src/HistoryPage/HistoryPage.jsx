@@ -26,8 +26,8 @@ function Header() {
 
 function Navigation() {
   return (
-    <div className="navbar">
-      <aside className="navbar-menu">
+    <nav className="navbar">
+      <aside className="navbar-menu is-active">
         <ul className="navbar-start">
           <li className="navbar-item">
             <Link to={"/index.html"}>Home</Link>
@@ -40,7 +40,7 @@ function Navigation() {
           </li>
         </ul>
       </aside>
-    </div>
+    </nav>
   );
 }
 
