@@ -3,7 +3,7 @@
   "name": "History Tree",
   "version": "0.8.0",
 
-  "description": "履歴をグラフで描画します",
+  "description": "履歴の遷移をグラフで描画します",
   "action": { "default_title": "History Tree", "default_popup": "popup.html" },
   "permissions": ["history", "tabs", "nativeMessaging", "storage"],
   "icons": {
