@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import HistoryChart from "./HistoryChart";
-import { ErrorBoundary } from "../ErrorBound";
 
 export default function HotHistoryChart() {
   const [nodes, setNodes] = useState([]);
@@ -39,9 +38,7 @@ export default function HotHistoryChart() {
 
   return (
     <>
-      <ErrorBoundary>
-        <HistoryChart {...{ nodes, links, family }} />
-      </ErrorBoundary>
+      <HistoryChart {...{ nodes, links, family }} />
     </>
   );
 }

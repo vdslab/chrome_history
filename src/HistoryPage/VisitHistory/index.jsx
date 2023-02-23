@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import getVisitsArray from "./getHistory";
 import VisitsChart from "./VisitsChart";
-import { ErrorBoundary } from "../ErrorBound";
 
 export default function VisitsHistoryChart({ filter }) {
   const [history, setHistory] = useState([]);
@@ -195,9 +194,7 @@ export default function VisitsHistoryChart({ filter }) {
 
   return (
     <>
-      <ErrorBoundary>
-        <VisitsChart {...{ nodes, links, family }} />
-      </ErrorBoundary>
+      <VisitsChart {...{ nodes, links, family }} />
     </>
   );
 }
