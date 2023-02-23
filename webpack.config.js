@@ -5,7 +5,6 @@ module.exports = {
   mode: "development",
   entry: {
     background: path.join(__dirname, "src/background.js"),
-    main: path.join(__dirname, "src/index.js"),
     pages: path.join(__dirname, "src/HistoryPage/main-history.js"),
     popup: path.join(__dirname, "src/popup.js"),
   },
