@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import HotHistoryChart from "./HotHistory";
 import VisitsHistoryChart from "./VisitHistory";
 import "bulma/css/bulma.css";
