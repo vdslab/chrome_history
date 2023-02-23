@@ -2,7 +2,7 @@
   "name": "chrome_history",
   "version": "1.0.0",
   "description": "",
-  "main": "index.jsx",
+  "main": "HistoryPage/main-history.jsx",
   "scripts": {
     "start": "webpack serve --open --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
