@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import getVisitsArray from "./getHistory";
 import VisitsChart from "./VisitsChart";
-import { ErrorBoundary } from "./ErrorBound";
+import { ErrorBoundary } from "../ErrorBound";
 
 export default function VisitsHistoryChart({ filter }) {
   const [history, setHistory] = useState([]);

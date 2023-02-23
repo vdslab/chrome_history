@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import HotHistoryChart from "./HotHistoryChart";
-import VisitsHistoryChart from "./VisitsHIstoryChart";
+import HotHistoryChart from "./HotHistory/HotHistoryChart";
+import VisitsHistoryChart from "./VisitHistory/VisitsHIstoryChart";
 import "bulma/css/bulma.css";
 import {
   Route,

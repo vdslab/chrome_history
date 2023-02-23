@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import cytoscape from "cytoscape";
 import CytoscapeComponent from "react-cytoscapejs";
 import cola from "cytoscape-cola";
-import { defaultLayout, styleSheet } from "../chartGlobalConst";
+import { defaultLayout, styleSheet } from "../../chartGlobalConst";
 
 cytoscape.use(cola);
 
