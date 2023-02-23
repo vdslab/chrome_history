@@ -165,21 +165,17 @@ function VisitsHistory() {
   const [filtering, setFiltering] = useState(0);
 
   return (
-    <div>
-      <div className="container">
+    <div className="container">
+      <div className="section">
         <button className="button" onClick={openModal}>
           日付でフィルタリング
         </button>
         <FormModal show={show} setShow={setShow} setFilter={setFiltering} />
-      </div>
 
-      <div className="section">
-        <div className="container">
-          <div className="box">
-            <ErrorBoundary>
-              <VisitsHistoryChart filter={filtering} />
-            </ErrorBoundary>
-          </div>
+        <div className="box">
+          <ErrorBoundary>
+            <VisitsHistoryChart filter={filtering} />
+          </ErrorBoundary>
         </div>
       </div>
     </div>
