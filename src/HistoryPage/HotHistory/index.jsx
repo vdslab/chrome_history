@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import HistoryChart from "./HistoryChart";
-import { ErrorBoundary } from "./ErrorBound";
+import { ErrorBoundary } from "../ErrorBound";
 
 export default function HotHistoryChart() {
   const [nodes, setNodes] = useState([]);
