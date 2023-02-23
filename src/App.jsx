@@ -29,6 +29,7 @@ const App = () => {
       sendResponse("not get");
     }
     // var referrer = document.referrer;
+    return true;
   });
 
   return (
