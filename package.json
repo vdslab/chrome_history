@@ -5,7 +5,8 @@
   "main": "HistoryPage/main-history.jsx",
   "scripts": {
     "start": "webpack serve --open --config webpack.config.js",
-    "build": "webpack --config webpack.config.js",
+    "dev": "webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.production.js && zip -r ./products/HistoryTree.zip ./products/product/",
     "watch": "webpack --watch --config webpack.config.js"
   },
   "repository": {
